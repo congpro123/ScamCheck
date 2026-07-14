@@ -327,4 +327,9 @@ body.large-text { --base: 21px; }
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+  /* Spinner là phản hồi trạng thái đang xử lý, nên vẫn quay chậm để tránh bị hiểu là trang đã treo. */
+  .spinner {
+    animation-duration: 1.2s !important;
+    animation-iteration-count: infinite !important;
+  }
 }

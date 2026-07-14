@@ -1,17 +1,25 @@
+# CI chạy lại kiểm tra khi mã nguồn thay đổi.
 name: Kiểm thử ScamCheck
 on:
+  # Bảo vệ bản production trên main.
   push:
     branches: [main]
+  # Phát hiện lỗi trước khi hợp nhất pull request.
   pull_request:
 jobs:
   test:
+    # Ubuntu phát hiện phụ thuộc riêng hệ điều hành.
     runs-on: ubuntu-latest
     steps:
+      # Lấy commit đang được kiểm tra.
       - uses: actions/checkout@v4
+      # Node 20 khớp Render.
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
+      # Cài tái lập rồi chạy kiểm thử.
       - run: npm ci
       - run: npm test
+      # Xuất ma trận nhầm lẫn bộ 60 tin.
       - run: npm run evaluate

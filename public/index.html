@@ -1,18 +1,29 @@
 <!doctype html>
 <html lang="vi">
 <head>
+  <!-- Viewport hỗ trợ vùng an toàn và chiều rộng thật trên iPhone. -->
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#075985"><title>ScamCheck — Kiểm tra tin nhắn lừa đảo</title>
+  <!-- Đường dẫn tương đối chạy được trên cả Render và GitHub Pages. -->
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
+  <!-- Skip link cho bàn phím và trình đọc màn hình. -->
   <a class="skip" href="#main">Bỏ qua điều hướng</a>
   <header><button class="brand" data-view="home" aria-label="Về trang kiểm tra">🛡️ <span>ScamCheck</span></button><button id="menuToggle" class="menu-toggle" aria-expanded="false" aria-controls="mainNav" aria-label="Mở mục lục">☰</button><nav id="mainNav" aria-label="Chức năng"><button data-view="home">Kiểm tra</button><button data-view="library">Thư viện</button><button data-view="training">Luyện tập</button><button data-view="history">Lịch sử</button><div class="settings" aria-label="Tuỳ chỉnh hiển thị"><span>Hiển thị</span><button id="contrast" aria-pressed="false" title="Tương phản cao" aria-label="Bật tương phản cao">◐</button><button id="fontSize" title="Phóng to chữ" aria-label="Phóng to chữ">A+</button></div></nav></header>
+  <!-- Các section bên dưới tạo điều hướng SPA không tải lại trang. -->
+  <!-- home: nhập và phân tích tin nhắn. -->
+  <!-- library: tra cứu 12 thủ đoạn lừa đảo. -->
+  <!-- training: bài luyện 10 câu có chấm điểm. -->
+  <!-- history: lịch sử tối đa 10 tin và nhật ký AI. -->
+  <!-- Chỉ một section có class active tại mỗi thời điểm. -->
   <main id="main">
+    <!-- Luồng chính: nhập tin, trạng thái chờ và kết quả. -->
     <section id="home" class="view active">
       <div class="hero"><p class="eyebrow">Bình tĩnh • Kiểm tra • Hành động</p><h1>Tin nhắn này có phải lừa đảo?</h1><p>Dán nguyên văn tin nhắn. ScamCheck không cần tên, số tài khoản hay thông tin bí mật của bác.</p></div>
       <div class="panel input-panel"><label for="message">Nội dung cần kiểm tra</label><textarea id="message" maxlength="6000" placeholder="Ví dụ: Tài khoản của quý khách sắp bị khoá. Bấm vào…" aria-describedby="counter inputHelp"></textarea><div class="input-meta"><span id="inputHelp">Không nhập mật khẩu hoặc mã OTP thật.</span><span id="counter">0 / 6000</span></div><div class="sample-row"><span>Tin mẫu:</span><button class="sample" data-sample="prize">Trúng thưởng</button><button class="sample" data-sample="bank">Giả ngân hàng</button><button class="sample" data-sample="safe">Tin an toàn</button></div><div class="primary-row"><button id="speak" class="secondary" aria-pressed="false">🎙️ Đọc tin</button><button id="analyze" class="primary">Kiểm tra ngay</button></div><p id="usage">Đã dùng 0 / 6 lượt AI trong phiên</p><div id="error" class="notice error" role="alert" hidden></div></div>
       <div id="loading" class="panel loading" hidden aria-live="polite"><span class="spinner"></span><div><strong>Đang soi từng dấu hiệu…</strong><p id="streamStatus">Lớp luật an toàn đang kiểm tra trước.</p></div></div>
+      <!-- aria-live thông báo kết quả mới cho công nghệ hỗ trợ. -->
       <section id="result" hidden aria-live="polite"></section>
     </section>
     <section id="library" class="view"><div class="section-head"><p class="eyebrow">Nhận diện thủ đoạn</p><h1>Thư viện kiểu lừa đảo</h1><p>Chọn một nhóm để xem dấu hiệu và cách phòng tránh.</p></div><div id="filters" class="filters"></div><div id="scamGrid" class="card-grid"></div><dialog id="scamDetail"><button class="dialog-close" aria-label="Đóng">×</button><div id="scamContent"></div></dialog></section>
@@ -20,6 +31,7 @@
     <section id="history" class="view"><div class="section-head row"><div><p class="eyebrow">Lưu trên thiết bị</p><h1>10 tin gần nhất</h1></div><button id="clearHistory" class="danger">Xoá tất cả</button></div><div id="historyList"></div><article class="panel"><div class="row"><div><h2>Nhật ký gọi AI trong phiên</h2><p>Thời điểm, độ dài tin, kết quả và thời gian phản hồi.</p></div><button id="exportLogs" class="secondary">Xuất JSON</button></div><div id="callLogs"></div></article></section>
   </main>
   <footer><p>ScamCheck là công cụ giáo dục do nhóm học viên phát triển và không thay thế cảnh báo chính thức từ ngân hàng hoặc cơ quan chức năng.</p></footer>
+  <!-- defer bảo đảm DOM sẵn sàng trước khi JavaScript gắn sự kiện. -->
   <script src="./app.js" defer></script>
 </body>
 </html>

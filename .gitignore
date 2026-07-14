@@ -1,6 +1,11 @@
+# Phụ thuộc được cài lại từ package-lock, không đưa vào Git.
 node_modules/
+# File chứa khoá thật phải luôn nằm ngoài lịch sử commit.
 .env
+# Rác hệ điều hành macOS.
 .DS_Store
+# Kết quả test/đánh giá có thể tái tạo.
 coverage/
 evaluation-results/
+# Log runtime có thể chứa dữ liệu phiên.
 *.log

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ScamCheck giúp kiểm tra nhanh các tin nhắn đáng ngờ và hướng dẫn cách xử lý an toàn.">
+    <meta name="description" content="ScamCheck giúp kiểm tra tin nhắn đáng ngờ và hướng dẫn cách xử lý an toàn.">
     <title>ScamCheck - Kiểm tra tin nhắn lừa đảo</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,7 +13,7 @@
             <span class="logo-icon" aria-hidden="true">✓</span>
             <span>ScamCheck</span>
         </a>
-        <a class="help-link" href="#huong-dan">Cách sử dụng</a>
+        <a class="help-link" href="#how-it-works">Cách sử dụng</a>
     </header>
 
     <main>
@@ -22,12 +22,8 @@
                 <p class="eyebrow">Kiểm tra miễn phí • Dễ sử dụng</p>
                 <h1>Tin nhắn này có phải lừa đảo không?</h1>
                 <p class="intro">Dán nội dung tin nhắn đáng ngờ vào bên dưới. ScamCheck sẽ giúp bạn nhận biết dấu hiệu nguy hiểm và hướng dẫn cách xử lý an toàn.</p>
-
-                <div class="trust-list" aria-label="Các loại tin nhắn hỗ trợ">
-                    <span>SMS</span>
-                    <span>Zalo</span>
-                    <span>Messenger</span>
-                    <span>Email</span>
+                <div class="trust-list" aria-label="Supported message types">
+                    <span>SMS</span><span>Zalo</span><span>Messenger</span><span>Email</span>
                 </div>
             </div>
 
@@ -40,7 +36,7 @@
             </div>
         </section>
 
-        <section class="steps" id="huong-dan">
+        <section class="steps" id="how-it-works">
             <div class="section-heading">
                 <p class="eyebrow">Chỉ với 3 bước</p>
                 <h2>Kiểm tra nhanh, xử lý đúng</h2>
@@ -54,7 +50,7 @@
                 <article class="step-card">
                     <span class="step-number">2</span>
                     <h3>Dán và kiểm tra</h3>
-                    <p>Dán nội dung vào ô phía trên rồi chọn nút “Kiểm tra ngay”.</p>
+                    <p>Dán nội dung vào ô phía trên rồi chọn nút Kiểm tra ngay.</p>
                 </article>
                 <article class="step-card">
                     <span class="step-number">3</span>
@@ -86,7 +82,7 @@
         button.addEventListener('click', () => {
             if (!message.value.trim()) {
                 result.className = 'demo-result warning';
-                result.textContent = 'Vui lòng dán nội dung tin nhắn cần kiểm tra.';
+                result.innerHTML = 'Vui lòng dán nội dung tin nhắn cần kiểm tra.';
                 message.focus();
                 return;
             }

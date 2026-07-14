@@ -24,7 +24,7 @@ function esc(v=''){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt
 function hash(s){let h=2166136261;for(const c of s.trim().toLowerCase())h=(h^c.charCodeAt(0))*16777619;return (h>>>0).toString(36)}
 // Điều hướng kiểu SPA: đổi section đang hiển thị mà không tải lại toàn trang.
 function showView(id){$$('.view').forEach(x=>x.classList.toggle('active',x.id===id));if(id==='history')renderHistory();if(id==='library')renderLibrary('Tất cả');if(id==='training')renderQuiz();scrollTo(0,0)}
-$$('[data-view]').forEach(b=>b.onclick=()=>{showView(b.dataset.view);$('header').classList.remove('menu-open');$('#menuToggle').setAttribute('aria-expanded','false');$('#menuToggle').setAttribute('aria-label','Mở mục lục')});
+$$('[data-view]').forEach(b=>b.onclick=()=>{showView(b.dataset.view);$('header').classList.remove('menu-open');$('#menuToggle').textContent='☰';$('#menuToggle').setAttribute('aria-expanded','false');$('#menuToggle').setAttribute('aria-label','Mở mục lục')});
 $('#menuToggle').onclick=()=>{const open=$('header').classList.toggle('menu-open');$('#menuToggle').textContent=open?'×':'☰';$('#menuToggle').setAttribute('aria-expanded',String(open));$('#menuToggle').setAttribute('aria-label',open?'Đóng mục lục':'Mở mục lục')};
 const prefs=load(KEYS.prefs,{});document.body.classList.toggle('high-contrast',!!prefs.contrast);document.body.classList.toggle('large-text',!!prefs.large);
 $('#contrast').onclick=()=>{document.body.classList.toggle('high-contrast');save(KEYS.prefs,{...load(KEYS.prefs,{}),contrast:document.body.classList.contains('high-contrast')})};

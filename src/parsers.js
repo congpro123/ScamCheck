@@ -47,7 +47,15 @@ function fallbackSteps(scenario, hotlines) {
 function parseResponder(raw, scenario, hotlines) {
   const obj = jsonFrom(raw) || {};
   const steps = Array.isArray(obj.steps) ? obj.steps.slice(0, 5).map(x => ({ action: clean(x?.action), script: clean(x?.script) })).filter(x => x.action && x.script) : [];
-  return { steps: steps.length >= 3 ? steps : fallbackSteps(scenario, hotlines) };
+  const required = {
+    none: /(dừng|chặn|lưu.*bằng chứng)/iu,
+    clicked: /(ngắt.*mạng|thiết bị|đổi.*mật khẩu|gỡ.*ứng dụng)/iu,
+    shared: /(đổi.*mật khẩu|lộ.*otp|lộ.*mã|khóa|khoá.*tài khoản)/iu,
+    paid: /(ngân hàng|tra soát|phong tỏa|phong toả|trình báo)/iu
+  };
+  const combined = steps.map(x => `${x.action} ${x.script}`).join(' ');
+  const matchesScenario = required[scenario]?.test(combined);
+  return { steps: steps.length >= 3 && matchesScenario ? steps : fallbackSteps(scenario, hotlines) };
 }
 
 function filterApprovedPhones(result, hotlines) {

@@ -220,6 +220,53 @@ th, td { padding: 11px; text-align: left; white-space: nowrap; border-bottom: 1p
 footer { position: fixed; bottom: 0; z-index: 25; width: 100%; padding: 14px max(24px, calc((100% - 1180px) / 2)); background: #111; color: #fff; font-size: .72rem; }
 footer p { margin: 0; text-align: center; }
 
+/* Chuyển động ngắn và có mục đích, phù hợp người dùng trung niên. */
+@keyframes view-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes result-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes menu-enter {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes loading-breathe {
+  0%, 100% { opacity: .58; }
+  50% { opacity: 1; }
+}
+
+.view.active { animation: view-enter .28s ease-out both; }
+header, .primary, .secondary, .sample, .filters button, .scenario-grid button,
+.scam-card, .history-card, .menu-toggle, textarea {
+  transition: color .18s ease, background-color .18s ease, border-color .18s ease,
+    transform .18s ease, opacity .18s ease;
+}
+.primary:active, .secondary:active, .sample:active, .filters button:active,
+.scenario-grid button:active, .menu-toggle:active { transform: translateY(1px); }
+.loading strong { animation: loading-breathe 1.8s ease-in-out infinite; }
+
+/* Các khối kết quả xuất hiện theo thứ tự đọc, không nhảy hoặc phóng to. */
+#result > * { animation: result-enter .32s ease-out both; }
+#result > :nth-child(2) { animation-delay: .05s; }
+#result > :nth-child(3) { animation-delay: .10s; }
+#result > :nth-child(4) { animation-delay: .15s; }
+#result > :nth-child(5) { animation-delay: .20s; }
+#result > :nth-child(n+6) { animation-delay: .24s; }
+.risk { transition: background-color .25s ease; }
+mark { transition: background-color .25s ease; }
+dialog[open] { animation: result-enter .24s ease-out both; }
+
+/* Hover chỉ dùng trên thiết bị có chuột, tránh trạng thái dính trên điện thoại. */
+@media (hover: hover) {
+  .primary:hover { transform: translateY(-1px); }
+  .secondary:hover, .sample:hover, .filters button:hover,
+  .scenario-grid button:hover { transform: translateY(-1px); }
+  .scam-card:hover { transform: translateY(-2px); }
+}
+
 /* Tương phản cao và phóng chữ dùng biến để không phá bố cục. */
 body.high-contrast { --ink: #000; --muted: #111; --line: #000; --orange: #b83c00; background: #fff; }
 body.large-text { --base: 21px; }
@@ -230,7 +277,7 @@ body.large-text { --base: 21px; }
   .brand { flex: 1; }
   .menu-toggle { display: grid; width: 44px; height: 44px; place-items: center; border: 1px solid #999; background: #fff; color: #111; font-size: 1.35rem; }
   nav { position: absolute; top: calc(100% + 6px); left: 12px; right: 12px; display: none; padding: 8px; background: #fff; border: 1px solid #999; box-shadow: 0 10px 24px rgba(0,0,0,.14); }
-  header.menu-open nav { display: grid; grid-template-columns: 1fr; }
+  header.menu-open nav { display: grid; grid-template-columns: 1fr; animation: menu-enter .2s ease-out both; }
   nav > button { width: 100%; text-align: left; border-bottom: 1px solid var(--line); }
   nav .settings { margin: 6px 0 0; padding-top: 6px; justify-content: flex-end; }
   nav .settings span { display: block; margin-right: auto; padding-left: 10px; font-size: .8rem; font-weight: 700; }
@@ -241,4 +288,14 @@ body.large-text { --base: 21px; }
   .sample-row > span { width: 100%; }
   .card-grid, .scenario-grid { grid-template-columns: 1fr; }
   .section-head.row { align-items: flex-end; }
+}
+
+/* Tắt toàn bộ animation khi hệ điều hành yêu cầu giảm chuyển động. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
 }

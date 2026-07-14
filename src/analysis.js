@@ -1,9 +1,11 @@
 'use strict';
 
 const OFFICIAL = ['vietcombank.com.vn', 'bidv.com.vn', 'vietinbank.vn', 'agribank.com.vn', 'mbbank.com.vn', 'techcombank.com', 'vpbank.com.vn', 'acb.com.vn', 'sacombank.com.vn', 'tpb.vn', 'momo.vn', 'zalopay.vn', 'gov.vn'];
+// Danh sách dịch vụ rút gọn cần cảnh báo vì người dùng không nhìn thấy đích thật.
 const SHORTENERS = new Set(['bit.ly', 'tinyurl.com', 't.co', 'goo.gl', 'shorturl.at', 'is.gd', 'cutt.ly']);
 
 function sanitizeInput(value, max = 6000) {
+  // Loại ký tự điều khiển, chặn chuỗi rỗng/quá ngắn/quá dài trước khi gọi AI.
   if (typeof value !== 'string') return { ok: false, error: 'Vui lòng nhập nội dung tin nhắn.' };
   const cleaned = value.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').trim();
   if (!cleaned) return { ok: false, error: 'Tin nhắn đang trống.' };
@@ -13,11 +15,13 @@ function sanitizeInput(value, max = 6000) {
 }
 
 function extractUrls(text) {
+  // Bắt cả URL có giao thức, www và tên miền viết trực tiếp trong tin nhắn.
   const regex = /(?:https?:\/\/|www\.)[^\s<>"']+|\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+(?:com|vn|net|org|info|xyz|top|online|site|me|ly)(?:\/[^\s<>"']*)?/giu;
   return [...new Set((text.match(regex) || []).map(x => x.replace(/[),.;!?]+$/, '')))];
 }
 
 function levenshtein(a, b) {
+  // Khoảng cách chỉnh sửa giúp phát hiện tên miền chỉ sai 1-2 ký tự so với tên chính thức.
   const row = [...Array(b.length + 1).keys()];
   for (let i = 1; i <= a.length; i += 1) {
     let prev = row[0]; row[0] = i;
@@ -31,6 +35,7 @@ function levenshtein(a, b) {
 function inspectDomain(url) {
   let host;
   try { host = new URL(/^https?:/i.test(url) ? url : `https://${url.replace(/^www\./i, '')}`).hostname.toLowerCase().replace(/^www\./, ''); } catch (_) { return null; }
+  // Chuẩn hóa các ký tự đồng hình phổ biến: 0→o, 1→l và rn→m.
   const normalized = host.normalize('NFKD').replace(/[^a-z0-9.-]/g, '').replace(/0/g, 'o').replace(/1/g, 'l').replace(/rn/g, 'm');
   if (SHORTENERS.has(host)) return { url, host, suspicious: true, reason: 'Đường dẫn rút gọn che giấu địa chỉ đích; hãy mở bằng công cụ kiểm tra an toàn.' };
   if (host.includes('xn--')) return { url, host, suspicious: true, reason: 'Tên miền quốc tế hoá có thể dùng ký tự đồng hình để giả mạo.' };
@@ -45,6 +50,7 @@ function inspectDomain(url) {
 }
 
 const RULES = [
+  // Lớp luật bắt tín hiệu chắc chắn, độc lập với phán đoán xác suất của AI.
   { re: /\b(otp|mã xác thực|mã xác minh)\b/iu, reason: 'Yêu cầu hoặc nhắc đến mã xác thực bí mật.' },
   { re: /(chuyển (khoản|tiền)|số tài khoản|stk\b)/iu, reason: 'Yêu cầu giao dịch hoặc cung cấp tài khoản.' },
   { re: /(khẩn cấp|ngay lập tức|trong \d+ (phút|giờ)|khoá tài khoản)/iu, reason: 'Tạo áp lực thời gian để người nhận không kịp kiểm chứng.' },
@@ -55,6 +61,7 @@ const RULES = [
 ];
 
 function analyzeWithRules(text) {
+  // Gom dấu hiệu từ từ khóa và URL, sau đó nâng mức rủi ro nếu có tín hiệu nghiêm trọng.
   const signals = [];
   for (const rule of RULES) {
     const match = text.match(rule.re);
@@ -67,6 +74,7 @@ function analyzeWithRules(text) {
 }
 
 function mergeAnalysis(ai, local) {
+  // AI không bao giờ được phép hạ mức cảnh báo mà lớp luật đã xác định.
   const rank = { 'An toàn': 0, 'Nghi ngờ': 1, 'Nguy hiểm': 2 };
   const base = ai || { risk: 'Nghi ngờ', signals: [], actions: [] };
   const risk = rank[local.risk] > rank[base.risk] ? local.risk : base.risk;

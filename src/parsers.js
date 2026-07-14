@@ -4,6 +4,7 @@ const RISKS = ['An toàn', 'Nghi ngờ', 'Nguy hiểm'];
 const DEFAULT_ACTIONS = ['Không bấm đường dẫn hoặc tải ứng dụng lạ.', 'Tự liên hệ tổ chức qua kênh chính thức.', 'Không cung cấp mật khẩu, OTP hoặc chuyển tiền.'];
 
 function jsonFrom(value) {
+  // Chấp nhận object, JSON thuần hoặc JSON bị bọc trong văn bản/markdown của AI.
   if (value && typeof value === 'object') return value;
   if (typeof value !== 'string') return null;
   try { return JSON.parse(value); } catch (_) {
@@ -16,6 +17,7 @@ function jsonFrom(value) {
 function clean(value, max = 500) { return typeof value === 'string' ? value.trim().slice(0, max) : ''; }
 
 function parseDetective(raw) {
+  // Mọi trường đều có giá trị mặc định để phản hồi AI sai không làm giao diện gãy.
   const obj = jsonFrom(raw) || {};
   const risk = RISKS.includes(obj.risk) ? obj.risk : 'Nghi ngờ';
   const signals = Array.isArray(obj.signals) ? obj.signals.slice(0, 8).map(x => ({ reason: clean(x?.reason), quote: clean(x?.quote, 180) })).filter(x => x.reason) : [];
@@ -24,6 +26,7 @@ function parseDetective(raw) {
 }
 
 function parsePsychologist(raw) {
+  // Cắt tối đa ba câu và tự bổ sung câu thứ hai nếu AI trả quá ngắn.
   const obj = jsonFrom(raw) || {};
   let explanation = clean(obj.explanation, 800);
   if (!explanation) return { explanation: 'Cô thấy tin này đang tạo áp lực để bác phản ứng thật nhanh. Bác cứ chậm lại và kiểm tra qua kênh chính thức nhé.' };
@@ -34,6 +37,7 @@ function parsePsychologist(raw) {
 }
 
 function fallbackSteps(scenario, hotlines) {
+  // Bốn playbook cục bộ là phương án an toàn khi AI lỗi hoặc trả lời chung chung.
   const police = hotlines.find(x => x.id === 'police')?.phone || '113';
   const scripts = {
     none: [['Dừng tương tác và lưu lại bằng chứng.', 'Tôi sẽ kiểm tra qua kênh chính thức.'], ['Chặn và báo cáo người gửi.', 'Tôi không đồng ý nhận thêm tin nhắn.'], ['Cảnh báo người thân nếu tài khoản có dấu hiệu bị chiếm.', 'Nếu nhận tin từ tôi, hãy gọi lại xác minh.']],
@@ -47,6 +51,7 @@ function fallbackSteps(scenario, hotlines) {
 function parseResponder(raw, scenario, hotlines) {
   const obj = jsonFrom(raw) || {};
   const steps = Array.isArray(obj.steps) ? obj.steps.slice(0, 5).map(x => ({ action: clean(x?.action), script: clean(x?.script) })).filter(x => x.action && x.script) : [];
+  // Từng tình huống phải chứa tín hiệu hành động riêng; không đạt thì dùng playbook chuẩn.
   const required = {
     none: /(dừng|chặn|lưu.*bằng chứng)/iu,
     clicked: /(ngắt.*mạng|thiết bị|đổi.*mật khẩu|gỡ.*ứng dụng)/iu,
@@ -59,6 +64,7 @@ function parseResponder(raw, scenario, hotlines) {
 }
 
 function filterApprovedPhones(result, hotlines) {
+  // Số không nằm trong allowlist bị ẩn trước khi kết quả được gửi về trình duyệt.
   const approved = new Set(hotlines.map(x => x.phone.replace(/\D/g, '')));
   const scrub = value => value.replace(/(?:\+?84|0)?\d[\d .-]{7,12}\d/g, phone => approved.has(phone.replace(/\D/g, '')) ? phone : '[số chưa xác minh đã được ẩn]');
   return { steps: result.steps.map(x => ({ action: scrub(x.action), script: scrub(x.script) })) };

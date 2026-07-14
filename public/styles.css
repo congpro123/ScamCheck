@@ -226,14 +226,8 @@ footer p { margin: 0; text-align: center; }
   to { opacity: 1; transform: translateY(0); }
 }
 @keyframes result-enter {
-  from {
-    -webkit-mask-position: 0 100%;
-    mask-position: 0 100%;
-  }
-  to {
-    -webkit-mask-position: 0 0;
-    mask-position: 0 0;
-  }
+  from { opacity: 0; filter: blur(2px); transform: translateY(3px); }
+  to { opacity: 1; filter: blur(0); transform: translateY(0); }
 }
 @keyframes menu-enter {
   from { opacity: 0; transform: translateY(-12px) scale(.98); }
@@ -258,22 +252,12 @@ header, .primary, .secondary, .sample, .filters button, .scenario-grid button,
 .scenario-grid button:active, .menu-toggle:active { transform: translateY(1px); }
 .loading strong { animation: loading-breathe 1.8s ease-in-out infinite; }
 
-/* Gradient trong suốt quét xuống dưới, tạo fade liên tục thay vì làm thẻ bật ra. */
-#result > * {
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 34%, transparent 66%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 34%, transparent 66%, transparent 100%);
-  -webkit-mask-size: 100% 300%;
-  mask-size: 100% 300%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  animation: result-enter .9s ease-in-out both;
+/* Từng từ rõ dần như câu trả lời đang được Gemini tạo, theo đúng thứ tự đọc. */
+.stream-word {
+  display: inline-block;
+  opacity: 0;
+  animation: result-enter .34s ease-out var(--stream-delay) forwards;
 }
-#result > :nth-child(2) { animation-delay: .10s; }
-#result > :nth-child(3) { animation-delay: .20s; }
-#result > :nth-child(4) { animation-delay: .30s; }
-#result > :nth-child(5) { animation-delay: .40s; }
-#result > :nth-child(6) { animation-delay: .50s; }
-#result > :nth-child(n+7) { animation-delay: .60s; }
 .result-card { position: relative; overflow: hidden; }
 .result-card::before {
   position: absolute;
@@ -286,7 +270,7 @@ header, .primary, .secondary, .sample, .filters button, .scenario-grid button,
 }
 .risk { transition: background-color .25s ease; }
 mark { transition: background-color .25s ease; }
-dialog[open] { animation: result-enter .24s ease-out both; }
+dialog[open] { animation: view-enter .24s ease-out both; }
 
 /* Hover chỉ dùng trên thiết bị có chuột, tránh trạng thái dính trên điện thoại. */
 @media (hover: hover) {

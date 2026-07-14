@@ -6,10 +6,10 @@ Quy ước: **Đạt bằng mã/test** có thể kiểm tra trong kho; **Cần n
 |---|---|---|
 | L1-01 | Đạt bằng mã | `.gitignore`, `.env.example`; cần tạo GitHub và kiểm tra lịch sử commit |
 | L1-02 | Đạt bằng mã | `public/index.html`, footer cố định; cần Safari iPhone thật |
-| L1-03 | Đạt bằng mã | `server.js`, JSON schema; cần chạy 10 lần với khoá thật |
+| L1-03 | Đạt production bước đầu | `server.js`, JSON schema; 3/3 ca production AI thật đúng cấu trúc, 2,28–2,65 giây; vẫn cần bộ 10 lần chính thức |
 | L1-04 | Đạt bằng test | 5 mẫu sai trong `tests/core.test.js` |
 | L1-05 | Đạt bằng mã/test | lỗi input/mạng/timeout/API, retry 429 tối đa 2 lần |
-| L1-06 | Cần nghiệm thu ngoài | `render.yaml`; cần tài khoản để deploy và URL public |
+| L1-06 | Đạt production | Render public tại `https://scamcheck-vn.onrender.com`, health/frontend/CSS/JS đều HTTP 200 |
 | L1-07 | Đạt bằng mã | 6 lượt/phiên, timeout 18 giây, bộ đếm UI |
 | L1-08 | Đạt bằng mã | nhật ký localStorage, bảng xem và xuất JSON |
 | L2-01 | Đạt bằng mã | prompt Thám tử; cần bộ 30 tin mentor để nghiệm thu 27/30 |
@@ -23,7 +23,7 @@ Quy ước: **Đạt bằng mã/test** có thể kiểm tra trong kho; **Cần n
 | L2-09 | Đạt bằng mã | Web Speech API + fallback micro bàn phím |
 | L2-10 | Đạt bằng mã | xoá một/tất cả và confirm |
 | L3-01 | Đạt bằng mã | prompt và parser giới hạn 2–3 câu |
-| L3-02 | Đạt bằng mã | gọi tuần tự, hai phần riêng; cần đo mạng thật dưới 20 giây |
+| L3-02 | Đạt production | gọi tuần tự, hai phần riêng; hai ca nguy hiểm production hoàn tất 2,28–2,37 giây |
 | L3-03 | Đạt bằng mã | chỉ gọi khi không An toàn, catch độc lập |
 | L3-04 | Đạt bằng test | guard + luật không cho hạ mức |
 | L3-05 | Đạt bằng test | 60 mẫu, `npm run evaluate` lớn hơn yêu cầu 20 |
@@ -33,7 +33,7 @@ Quy ước: **Đạt bằng mã/test** có thể kiểm tra trong kho; **Cần n
 | L4-03 | Đạt bằng mã | 7 nhóm luật, merge không mâu thuẫn |
 | L4-04 | Đạt bằng dữ liệu | 60 tin cân bằng, 15 tin `hard`, có lý do |
 | L4-05 | Đạt baseline | ma trận, accuracy/recall, 3 điểm yếu; cần lượt Gemini thật |
-| L4-06 | Cần khoá Gemini | chưa thể chứng minh số trước–sau AI khi chưa có API key |
+| L4-06 | Chưa đủ số liệu | đã sửa model ngừng hoạt động và giảm latency từ timeout xuống 2,28–2,65 giây; chưa chạy đủ 60 tin AI để chứng minh accuracy trước–sau |
 | L4-07 | Đạt bằng mã | 10 câu, điểm, giải thích và tổng kết |
 | L4-08 | Chưa đạt hoàn toàn | có trạng thái sớm; chưa stream token Gemini có cấu trúc |
 | L4-09 | Đạt bằng mã | cache 30 tin, tin trùng không tăng lượt |
@@ -51,13 +51,13 @@ Quy ước: **Đạt bằng mã/test** có thể kiểm tra trong kho; **Cần n
 | N7-02 | Đạt bằng tài liệu | hai sơ đồ Mermaid khớp luồng |
 | N7-03 | Đạt bằng tài liệu | `SLIDES.md`, 9 slide |
 | N7-04 | Đạt kịch bản | `DEMO.md`; nhóm cần tập 2 lần |
-| N7-05 | Cần khoá Gemini | báo cáo baseline có; cần chụp 3 phản hồi thật |
+| N7-05 | Đạt dữ liệu, thiếu ảnh | đã có 3 phản hồi production AI thật và báo cáo baseline; cần chụp màn hình cho slide |
 | N7-06 | Cần con người | cần quay video dưới 5 phút |
 | N7-07 | Đạt bằng tài liệu | `TECHNICAL_LOG.md` |
 
 ## Các chặn còn lại để tuyên bố 50/50
 
-1. Cấp khoá Gemini để chạy đo trước–sau và lưu ba minh chứng thật.
+1. Chạy đủ bộ 60 tin qua Gemini để có số accuracy trước–sau chính thức.
 2. Chọn dịch vụ sandbox/redirect resolver để giải URL rút gọn mà không tạo lỗ hổng SSRF.
-3. Triển khai bằng tài khoản GitHub/Render và kiểm tra URL public.
-4. Xác minh tổng đài, Safari/VoiceOver, Android, quay video và tập demo bằng thiết bị/người thật.
+3. Bổ sung stream token Gemini thật thay cho trạng thái tiến trình.
+4. Xác minh tổng đài, Safari/VoiceOver, Android, chụp minh chứng, quay video và tập demo bằng thiết bị/người thật.

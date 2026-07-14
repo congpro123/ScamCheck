@@ -1,48 +1,99 @@
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kiểm tra nội dung</title>
-
+    <meta name="description" content="ScamCheck giúp kiểm tra nhanh các tin nhắn đáng ngờ và hướng dẫn cách xử lý an toàn.">
+    <title>ScamCheck - Kiểm tra tin nhắn lừa đảo</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <header class="site-header">
+        <a class="logo" href="#" aria-label="Trang chủ ScamCheck">
+            <span class="logo-icon" aria-hidden="true">✓</span>
+            <span>ScamCheck</span>
+        </a>
+        <a class="help-link" href="#huong-dan">Cách sử dụng</a>
+    </header>
 
-<div class="container">
+    <main>
+        <section class="hero">
+            <div class="hero-copy">
+                <p class="eyebrow">Kiểm tra miễn phí • Dễ sử dụng</p>
+                <h1>Tin nhắn này có phải lừa đảo không?</h1>
+                <p class="intro">Dán nội dung tin nhắn đáng ngờ vào bên dưới. ScamCheck sẽ giúp bạn nhận biết dấu hiệu nguy hiểm và hướng dẫn cách xử lý an toàn.</p>
 
-    <h1>Kiểm tra nội dung</h1>
+                <div class="trust-list" aria-label="Các loại tin nhắn hỗ trợ">
+                    <span>SMS</span>
+                    <span>Zalo</span>
+                    <span>Messenger</span>
+                    <span>Email</span>
+                </div>
+            </div>
 
-    <textarea
-        id="content"
-        placeholder="Nhập hoặc dán nội dung vào đây..."
-    ></textarea>
+            <div class="checker-card">
+                <label for="message">Nội dung tin nhắn cần kiểm tra</label>
+                <textarea id="message" placeholder="Ví dụ: Tài khoản của bạn sắp bị khóa. Hãy bấm vào đường link này để xác nhận..."></textarea>
+                <p class="privacy-note">🔒 Không nhập mật khẩu, mã OTP hoặc thông tin tài khoản ngân hàng.</p>
+                <button type="button" id="check-button">Kiểm tra ngay</button>
+                <div class="demo-result" id="result" role="status" aria-live="polite"></div>
+            </div>
+        </section>
 
-    <button id="checkBtn">
-        Kiểm tra
-    </button>
+        <section class="steps" id="huong-dan">
+            <div class="section-heading">
+                <p class="eyebrow">Chỉ với 3 bước</p>
+                <h2>Kiểm tra nhanh, xử lý đúng</h2>
+            </div>
+            <div class="step-grid">
+                <article class="step-card">
+                    <span class="step-number">1</span>
+                    <h3>Sao chép tin nhắn</h3>
+                    <p>Sao chép nội dung đáng ngờ từ SMS, Zalo, Messenger hoặc email.</p>
+                </article>
+                <article class="step-card">
+                    <span class="step-number">2</span>
+                    <h3>Dán và kiểm tra</h3>
+                    <p>Dán nội dung vào ô phía trên rồi chọn nút “Kiểm tra ngay”.</p>
+                </article>
+                <article class="step-card">
+                    <span class="step-number">3</span>
+                    <h3>Làm theo hướng dẫn</h3>
+                    <p>Đọc kết quả và thực hiện các bước an toàn được gợi ý.</p>
+                </article>
+            </div>
+        </section>
 
-    <div id="result">
-        Chưa có kết quả.
-    </div>
+        <section class="safety-box">
+            <div class="safety-icon" aria-hidden="true">!</div>
+            <div>
+                <h2>Nếu bạn đang nghi ngờ, hãy dừng lại</h2>
+                <p>Không bấm vào đường link, không chuyển tiền và không cung cấp mã OTP. Hãy gọi trực tiếp cho người thân, ngân hàng hoặc cơ quan được nhắc đến qua số điện thoại chính thức.</p>
+            </div>
+        </section>
+    </main>
 
-</div>
+    <footer>
+        <p><strong>ScamCheck</strong> — Cùng bạn an toàn hơn trên không gian mạng.</p>
+        <p>Đây là trang minh họa, kết quả chỉ mang tính tham khảo.</p>
+    </footer>
 
-<script>
-document.getElementById("checkBtn").onclick = function () {
+    <script>
+        const button = document.getElementById('check-button');
+        const message = document.getElementById('message');
+        const result = document.getElementById('result');
 
-    let text = document.getElementById("content").value;
+        button.addEventListener('click', () => {
+            if (!message.value.trim()) {
+                result.className = 'demo-result warning';
+                result.textContent = 'Vui lòng dán nội dung tin nhắn cần kiểm tra.';
+                message.focus();
+                return;
+            }
 
-    if(text.trim()==""){
-        document.getElementById("result").innerHTML="Bạn chưa nhập nội dung!";
-        return;
-    }
-
-    document.getElementById("result").innerHTML=
-    "Đã nhận " + text.length + " ký tự.";
-}
-</script>
-
+            result.className = 'demo-result danger';
+            result.innerHTML = '<strong>Phát hiện dấu hiệu đáng ngờ.</strong><br>Không bấm vào liên kết hoặc cung cấp thông tin cá nhân. Hãy xác minh với đơn vị liên quan qua số điện thoại chính thức.';
+        });
+    </script>
 </body>
 </html>

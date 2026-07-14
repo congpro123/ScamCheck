@@ -310,7 +310,9 @@ footer p {
     margin: 4px 0;
 }
 
-footer p:last-child {
+footer .footer-disclaimer {
+    max-width: 900px;
+    margin: 10px auto 0;
     font-size: 14px;
     opacity: 0.8;
 }

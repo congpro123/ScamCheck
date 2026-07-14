@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiểm tra nội dung</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Kiểm tra nội dung</h1>
+
+    <textarea
+        id="content"
+        placeholder="Nhập hoặc dán nội dung vào đây..."
+    ></textarea>
+
+    <button id="checkBtn">
+        Kiểm tra
+    </button>
+
+    <div id="result">
+        Chưa có kết quả.
+    </div>
+
+</div>
+
+<script>
+document.getElementById("checkBtn").onclick = function () {
+
+    let text = document.getElementById("content").value;
+
+    if(text.trim()==""){
+        document.getElementById("result").innerHTML="Bạn chưa nhập nội dung!";
+        return;
+    }
+
+    document.getElementById("result").innerHTML=
+    "Đã nhận " + text.length + " ký tự.";
+}
+</script>
+
+</body>
+</html>

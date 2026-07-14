@@ -11,5 +11,7 @@ services:
         value: 20
       - key: GEMINI_API_KEY
         sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.5-flash
       - key: PUBLIC_URL
         sync: false

@@ -9,7 +9,7 @@
 3. Chạy `npm start`, mở `http://localhost:3000`.
 4. Chạy kiểm thử bằng `npm test`; đo bộ 60 tin bằng `npm run evaluate`.
 
-Không đưa `.env` lên Git. Nếu không có khoá, ứng dụng chủ động chạy bằng lớp luật để demo giao diện. Node/Express được chọn vì khoá AI phải ở máy chủ, không lộ trong trình duyệt.
+Không đưa `.env` lên Git. Nếu không có khoá, ứng dụng chủ động chạy bằng lớp luật để demo giao diện. Node/Express được chọn vì khoá AI phải ở máy chủ, không lộ trong trình duyệt. Model mặc định là `gemini-3.5-flash`; Gemini 2.0 Flash đã ngừng hoạt động từ ngày 01/06/2026.
 
 ## Tính năng hoàn thành
 

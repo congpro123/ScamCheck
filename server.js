@@ -11,8 +11,8 @@ const hotlines = require('./data/hotlines.json');
 
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
-const requestedModel = process.env.GEMINI_MODEL || 'gemini-3.5-flash';
-const MODEL = /^gemini-2\.0(?:-|$)/.test(requestedModel) ? 'gemini-3.5-flash' : requestedModel;
+const requestedModel = process.env.GEMINI_MODEL || 'gemini-3.1-flash-lite';
+const MODEL = /^gemini-2\.0(?:-|$)/.test(requestedModel) ? 'gemini-3.1-flash-lite' : requestedModel;
 const MAX_INPUT = 6000;
 const TIMEOUT = 18000;
 const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;

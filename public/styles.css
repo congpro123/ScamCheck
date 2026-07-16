@@ -278,6 +278,11 @@ header, .primary, .secondary, .sample, .filters button, .scenario-grid button,
   mask-repeat: no-repeat;
   animation: result-enter .9s ease-in-out both;
 }
+#result > .risk {
+  -webkit-mask-image: none;
+  mask-image: none;
+  animation: none;
+}
 #result > :nth-child(2) { animation-delay: .10s; }
 #result > :nth-child(3) { animation-delay: .20s; }
 #result > :nth-child(4) { animation-delay: .30s; }

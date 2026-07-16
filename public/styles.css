@@ -276,6 +276,7 @@ header, .primary, .secondary, .sample, .filters button, .scenario-grid button,
 .quiz-options .answer:nth-child(1) { animation-delay: .18s; }
 .quiz-options .answer:nth-child(2) { animation-delay: .36s; }
 .feedback, .improvement-tip { animation: quiz-enter .5s cubic-bezier(.22, 1, .36, 1) both; }
+.quiz-message, .quiz-options .answer, .feedback, .improvement-tip { animation: none; }
 
 /* Gradient trong suốt quét xuống dưới, tạo fade liên tục thay vì làm thẻ bật ra. */
 #result > * {

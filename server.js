@@ -6,7 +6,7 @@ const path = require('path');
 const { GoogleGenerativeAI, SchemaType } = require('@google/generative-ai');
 const QRCode = require('qrcode');
 const { analyzeWithRules, mergeAnalysis, sanitizeInput } = require('./src/analysis');
-const { parseDetective, parsePsychologist, parseResponder, filterApprovedPhones } = require('./src/parsers');
+const { parseDetective, parsePsychologist, parseResponder, filterApprovedPhones, responseContacts } = require('./src/parsers');
 const hotlines = require('./data/hotlines.json');
 
 const app = express();
@@ -102,10 +102,10 @@ app.post('/api/respond', async (req, res) => {
   if (!text.ok) return res.status(400).json({ error: text.error });
   const approved = hotlines.map(x => `${x.name}: ${x.phone}`).join('; ');
   try {
-    const raw = await generate(`${guard}\nBạn là Người ứng cứu, bình tĩnh và dứt khoát. Chỉ trả JSON {"steps":[{"action":"...","script":"câu nói mẫu"}]}. Lập 3-5 bước đánh số phù hợp tình huống ${scenario}. Chỉ được dùng số trong bảng: ${approved}. Không cần số thì đừng bịa.\n<TIN_NHAN>${text.value}</TIN_NHAN>`);
-    return res.json(filterApprovedPhones(parseResponder(raw, scenario, hotlines), hotlines));
+    const raw = await generate(`${guard}\nBạn là Người ứng cứu, bình tĩnh và dứt khoát. Chỉ trả JSON {"steps":[{"action":"...","script":"câu nói mẫu"}]}. Lập 3-5 bước phù hợp tình huống ${scenario}. Mỗi action phải nói rõ: làm gì, làm ở đâu hoặc gọi cho ai, cần chuẩn bị thông tin nào và mục tiêu cần yêu cầu; sắp xếp việc khẩn cấp trước. Script phải là câu người dùng có thể đọc nguyên văn khi gọi. Chỉ được dùng số trong bảng: ${approved}. Không cần số thì đừng bịa. Phân biệt rõ 113 chỉ dùng khi có tình huống khẩn cấp hoặc đe dọa trực tiếp; 156 dùng để phản ánh cuộc gọi, tin nhắn có dấu hiệu lừa đảo.\n<TIN_NHAN>${text.value}</TIN_NHAN>`);
+    return res.json({ ...filterApprovedPhones(parseResponder(raw, scenario, hotlines), hotlines), contacts: responseContacts(scenario, text.value, hotlines) });
   } catch (_) {
-    return res.json(parseResponder(null, scenario, hotlines));
+    return res.json({ ...parseResponder(null, scenario, hotlines), contacts: responseContacts(scenario, text.value, hotlines) });
   }
 });
 

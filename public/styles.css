@@ -213,6 +213,12 @@ dialog::backdrop { background: rgba(0,0,0,.66); }
 .feedback.incorrect { border-left-color: var(--danger); background: #fff0ef; }
 .improvement-tip { margin-top: 12px; padding: 14px 16px; border: 1px solid #e8b04a; border-radius: 2px; background: #fff8e6; }
 .improvement-tip p { margin: 4px 0 0; }
+.response-contacts { margin: 18px 0; padding: 18px; border: 2px solid var(--orange); border-radius: 2px; background: var(--orange-soft); }
+.response-contacts h3 { margin-top: 0; }
+.response-contacts ul { padding-left: 22px; }
+.response-contacts li { margin: 12px 0; }
+.response-contacts a { color: var(--orange-dark); font-size: 1.2rem; }
+.response-contacts span, .response-contacts small { color: var(--muted); }
 .history-card { margin: 12px 0; padding: 24px; }
 .history-card h2 { margin: 6px 0; }
 .history-card button { margin: 6px 8px 0 0; }

@@ -171,8 +171,6 @@ button:disabled { opacity: .55; cursor: not-allowed; }
 
 /* Màu trạng thái là màu nghiệp vụ, không bị thay bởi hệ màu thương hiệu. */
 #result { margin-top: 28px; }
-#result { scroll-margin-top: 96px; }
-.risk { scroll-margin-top: 96px; }
 .risk { margin-bottom: 18px; padding: 26px 30px; color: #fff; border-radius: 2px; }
 .risk.safe { background: var(--safe); }
 .risk.suspect { background: var(--warn); }
@@ -259,10 +257,6 @@ footer p { margin: 0; text-align: center; }
   0%, 100% { opacity: .58; }
   50% { opacity: 1; }
 }
-@keyframes quiz-enter {
-  from { opacity: 0; transform: translateY(24px) scale(.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
 
 .view.active { animation: view-enter .48s cubic-bezier(.22, 1, .36, 1) both; }
 header, .primary, .secondary, .sample, .filters button, .scenario-grid button,
@@ -273,12 +267,6 @@ header, .primary, .secondary, .sample, .filters button, .scenario-grid button,
 .primary:active, .secondary:active, .sample:active, .filters button:active,
 .scenario-grid button:active, .menu-toggle:active { transform: translateY(1px); }
 .loading strong { animation: loading-breathe 1.8s ease-in-out infinite; }
-.quiz-message { animation: quiz-enter .62s cubic-bezier(.22, 1, .36, 1) both; }
-.quiz-options .answer { animation: quiz-enter .56s cubic-bezier(.22, 1, .36, 1) both; }
-.quiz-options .answer:nth-child(1) { animation-delay: .18s; }
-.quiz-options .answer:nth-child(2) { animation-delay: .36s; }
-.feedback, .improvement-tip { animation: quiz-enter .5s cubic-bezier(.22, 1, .36, 1) both; }
-.quiz-message, .quiz-options .answer, .feedback, .improvement-tip { animation: none; }
 
 /* Gradient trong suốt quét xuống dưới, tạo fade liên tục thay vì làm thẻ bật ra. */
 #result > * {

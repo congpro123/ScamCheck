@@ -272,7 +272,9 @@ header, .primary, .secondary, .sample, .filters button, .scenario-grid button,
 .scenario-grid button:active, .menu-toggle:active { transform: translateY(1px); }
 .loading strong { animation: loading-breathe 1.8s ease-in-out infinite; }
 .quiz-message { animation: quiz-enter .42s cubic-bezier(.22, 1, .36, 1) both; }
-.quiz-options { animation: quiz-enter .42s .08s cubic-bezier(.22, 1, .36, 1) both; }
+.quiz-options .answer { animation: quiz-enter .42s cubic-bezier(.22, 1, .36, 1) both; }
+.quiz-options .answer:nth-child(1) { animation-delay: .1s; }
+.quiz-options .answer:nth-child(2) { animation-delay: .2s; }
 .feedback, .improvement-tip { animation: quiz-enter .35s cubic-bezier(.22, 1, .36, 1) both; }
 
 /* Gradient trong suốt quét xuống dưới, tạo fade liên tục thay vì làm thẻ bật ra. */

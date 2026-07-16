@@ -171,6 +171,7 @@ button:disabled { opacity: .55; cursor: not-allowed; }
 
 /* Màu trạng thái là màu nghiệp vụ, không bị thay bởi hệ màu thương hiệu. */
 #result { margin-top: 28px; }
+#result { scroll-margin-top: 96px; }
 .risk { margin-bottom: 18px; padding: 26px 30px; color: #fff; border-radius: 2px; }
 .risk.safe { background: var(--safe); }
 .risk.suspect { background: var(--warn); }

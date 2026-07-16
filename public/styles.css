@@ -210,6 +210,7 @@ dialog::backdrop { background: rgba(0,0,0,.66); }
 .quiz-message { padding: 22px; background: var(--surface-alt); border-left: 4px solid var(--orange); font-size: 1.08rem; }
 .quiz-options { display: flex; gap: 10px; margin: 20px 0; }
 .feedback { padding: 14px 16px; background: var(--orange-soft); border-left: 4px solid var(--orange); }
+.feedback.correct { border-left-color: var(--safe); background: #ecfdf3; }
 .feedback.incorrect { border-left-color: var(--danger); background: #fff0ef; }
 .improvement-tip { margin-top: 12px; padding: 14px 16px; border: 1px solid #e8b04a; border-radius: 2px; background: #fff8e6; }
 .improvement-tip p { margin: 4px 0 0; }

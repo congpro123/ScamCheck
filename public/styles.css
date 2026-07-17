@@ -1,4 +1,20 @@
 /* Hệ thống thiết kế corporate: trắng làm nền, đen cho nội dung, cam cho hành động. */
+@font-face {
+  font-family: "Nunito";
+  src: url("./Nunito/Nunito-VariableFont_wght.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 200 1000;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Nunito";
+  src: url("./Nunito/Nunito-Italic-VariableFont_wght.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 200 1000;
+  font-display: swap;
+}
+
 :root {
   --ink: #191919;
   --muted: #666;
@@ -22,7 +38,7 @@ body {
   padding-bottom: 96px;
   color: var(--ink);
   background: var(--surface);
-  font-family: Arial, "Segoe UI", sans-serif;
+  font-family: "Nunito", Arial, "Segoe UI", sans-serif;
   line-height: 1.55;
 }
 button, textarea { font: inherit; }

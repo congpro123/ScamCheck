@@ -62,6 +62,10 @@ function responseContacts(scenario, text, hotlines) {
   if (bank && ['clicked', 'shared', 'paid'].includes(scenario)) contacts.push({ ...bank, purpose: 'Khóa tài khoản/thẻ, kiểm tra giao dịch lạ và yêu cầu tra soát.' });
   const report = hotlines.find(x => x.id === 'cyber');
   if (report) contacts.push({ ...report, purpose: 'Gọi hoặc nhắn tin để phản ánh số điện thoại có dấu hiệu lừa đảo.' });
+  const nationalCyber = hotlines.find(x => x.id === 'national-cyber');
+  if (nationalCyber && ['clicked', 'shared', 'paid'].includes(scenario)) contacts.push({ ...nationalCyber, purpose: 'Nhận hỗ trợ khi thiết bị, tài khoản hoặc dữ liệu có nguy cơ mất an toàn mạng.' });
+  const cyberPolice = hotlines.find(x => x.id === 'cyber-police');
+  if (cyberPolice && ['shared', 'paid'].includes(scenario)) contacts.push({ ...cyberPolice, purpose: 'Liên hệ khi đã lộ thông tin quan trọng, bị chiếm đoạt tài sản hoặc cần trình báo tội phạm công nghệ cao.' });
   const police = hotlines.find(x => x.id === 'police');
   if (police && scenario === 'paid') contacts.push({ ...police, purpose: 'Chỉ gọi khi đang bị đe dọa hoặc cần hỗ trợ khẩn cấp; trường hợp thường hãy đến công an gần nhất.' });
   return contacts;

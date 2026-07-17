@@ -37,7 +37,7 @@ Quy ước: **Đạt bằng mã/test** có thể kiểm tra trong kho; **Cần n
 | L4-07 | Đạt bằng mã | 10 câu, điểm, giải thích và tổng kết |
 | L4-08 | Chưa đạt hoàn toàn | có trạng thái sớm; chưa stream token Gemini có cấu trúc |
 | L4-09 | Đạt bằng mã | cache 30 tin, tin trùng không tăng lượt |
-| L5-01 | Cần xác minh ngoài | 12 đầu mối trong `data/hotlines.json`; phải đối chiếu lại nguồn chính thức |
+| L5-01 | Đạt bằng mã/tài liệu | `SDT.docx` lưu danh sách đã xác minh; `data/hotlines.json` có 10 ngân hàng, 113, 156, Tổng đài An toàn mạng quốc gia và Phòng An ninh mạng |
 | L5-02 | Đạt bằng mã | 4 lựa chọn, chọn xong khoá toàn bộ |
 | L5-03 | Đạt bằng mã/test | prompt, bước + câu mẫu, allowlist số |
 | L5-04 | Đạt bằng mã/test | 4 kịch bản khác nhau |

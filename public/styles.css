@@ -62,7 +62,9 @@ header {
   align-items: center;
   gap: 32px;
   padding: 0 max(24px, calc((100% - 1180px) / 2));
-  background: rgba(255,255,255,.97);
+  background: rgba(255,255,255,.78);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+  backdrop-filter: blur(18px) saturate(145%);
   border-top: 4px solid var(--orange);
   border-bottom: 1px solid var(--line);
 }
@@ -329,6 +331,7 @@ dialog[open] { animation: result-enter .24s ease-out both; }
 
 /* Tương phản cao và phóng chữ dùng biến để không phá bố cục. */
 body.high-contrast { --ink: #000; --muted: #111; --line: #000; --orange: #b83c00; background: #fff; }
+body.high-contrast header { background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none; }
 body.large-text { --base: 21px; }
 
 /* Menu điện thoại là hộp nổi, không làm xê dịch nội dung. */

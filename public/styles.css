@@ -68,6 +68,19 @@ header {
   border-top: 4px solid var(--orange);
   border-bottom: 1px solid var(--line);
 }
+header::after {
+  position: absolute;
+  right: 14px;
+  bottom: -14px;
+  left: 14px;
+  height: 14px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(255,255,255,.5), rgba(255,255,255,0));
+  border-radius: 0 0 22px 22px;
+  -webkit-backdrop-filter: blur(14px) saturate(135%);
+  backdrop-filter: blur(14px) saturate(135%);
+  content: "";
+}
 .brand {
   display: inline-flex;
   align-items: center;
@@ -332,6 +345,7 @@ dialog[open] { animation: result-enter .24s ease-out both; }
 /* Tương phản cao và phóng chữ dùng biến để không phá bố cục. */
 body.high-contrast { --ink: #000; --muted: #111; --line: #000; --orange: #b83c00; background: #fff; }
 body.high-contrast header { background: #fff; -webkit-backdrop-filter: none; backdrop-filter: none; }
+body.high-contrast header::after { display: none; }
 body.large-text { --base: 21px; }
 
 /* Menu điện thoại là hộp nổi, không làm xê dịch nội dung. */

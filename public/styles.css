@@ -55,6 +55,7 @@ button:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 /* Header phẳng, đường cam phía trên là điểm nhận diện duy nhất. */
 header {
   position: sticky;
+  isolation: isolate;
   top: 0;
   z-index: 30;
   width: 100%;
@@ -65,8 +66,8 @@ header {
   gap: 32px;
   padding: 0 max(24px, calc((100% - 1180px) / 2));
   background: rgba(255,255,255,.78);
-  -webkit-backdrop-filter: blur(18px) saturate(145%);
-  backdrop-filter: blur(18px) saturate(145%);
+  -webkit-backdrop-filter: blur(12px) saturate(125%);
+  backdrop-filter: blur(12px) saturate(125%);
   border-top: 4px solid var(--orange);
   border-bottom: 1px solid var(--line);
   transition: top .32s cubic-bezier(.22, 1, .36, 1), width .32s cubic-bezier(.22, 1, .36, 1),
@@ -82,7 +83,7 @@ header.is-scrolled {
   border: 1px solid rgba(25,25,25,.13);
   border-top: 3px solid var(--orange);
   border-radius: 18px;
-  box-shadow: 0 12px 34px rgba(25,25,25,.14);
+  box-shadow: none;
 }
 header::after {
   position: absolute;
@@ -91,16 +92,21 @@ header::after {
   left: 14px;
   height: 14px;
   pointer-events: none;
+  z-index: -1;
   background: linear-gradient(to bottom, rgba(255,255,255,.5), rgba(255,255,255,0));
   border-radius: 0 0 22px 22px;
-  -webkit-backdrop-filter: blur(14px) saturate(135%);
-  backdrop-filter: blur(14px) saturate(135%);
+  -webkit-backdrop-filter: blur(9px) saturate(120%);
+  backdrop-filter: blur(9px) saturate(120%);
   content: "";
 }
 header.is-scrolled::after {
-  right: 18px;
-  left: 18px;
-  border-radius: 0 0 18px 18px;
+  top: -5px;
+  right: -5px;
+  bottom: -5px;
+  left: -5px;
+  height: auto;
+  background: rgba(255,255,255,.16);
+  border-radius: 22px;
 }
 .brand {
   display: inline-flex;

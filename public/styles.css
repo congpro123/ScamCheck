@@ -55,7 +55,6 @@ button:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 /* Header phẳng, đường cam phía trên là điểm nhận diện duy nhất. */
 header {
   position: sticky;
-  isolation: isolate;
   top: 0;
   z-index: 30;
   width: 100%;
@@ -66,8 +65,8 @@ header {
   gap: 32px;
   padding: 0 max(24px, calc((100% - 1180px) / 2));
   background: rgba(255,255,255,.78);
-  -webkit-backdrop-filter: blur(12px) saturate(125%);
-  backdrop-filter: blur(12px) saturate(125%);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+  backdrop-filter: blur(18px) saturate(145%);
   border-top: 4px solid var(--orange);
   border-bottom: 1px solid var(--line);
   transition: top .32s cubic-bezier(.22, 1, .36, 1), width .32s cubic-bezier(.22, 1, .36, 1),
@@ -92,21 +91,16 @@ header::after {
   left: 14px;
   height: 14px;
   pointer-events: none;
-  z-index: -1;
   background: linear-gradient(to bottom, rgba(255,255,255,.5), rgba(255,255,255,0));
   border-radius: 0 0 22px 22px;
-  -webkit-backdrop-filter: blur(9px) saturate(120%);
-  backdrop-filter: blur(9px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(135%);
+  backdrop-filter: blur(14px) saturate(135%);
   content: "";
 }
 header.is-scrolled::after {
-  top: -5px;
-  right: -5px;
-  bottom: -5px;
-  left: -5px;
-  height: auto;
-  background: rgba(255,255,255,.16);
-  border-radius: 22px;
+  right: 18px;
+  left: 18px;
+  border-radius: 0 0 18px 18px;
 }
 .brand {
   display: inline-flex;

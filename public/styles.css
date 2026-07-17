@@ -127,12 +127,18 @@ header.is-scrolled::after {
 nav { display: flex; align-items: center; gap: 4px; flex: 1; }
 nav > button, .settings button {
   min-height: 44px;
+  max-width: 150px;
   padding: 9px 13px;
   border: 0;
   background: transparent;
   color: #292929;
   font-size: .9rem;
   font-weight: 700;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: max-width .34s cubic-bezier(.22, 1, .36, 1), padding .34s cubic-bezier(.22, 1, .36, 1),
+    margin .34s cubic-bezier(.22, 1, .36, 1), opacity .22s ease, transform .34s cubic-bezier(.22, 1, .36, 1),
+    color .18s ease, background-color .18s ease, border-color .18s ease;
 }
 nav > button:hover { color: var(--orange-dark); }
 nav > button[data-view="all"] {
@@ -141,6 +147,18 @@ nav > button[data-view="all"] {
   background: var(--orange-soft);
   color: var(--orange-dark);
 }
+.all-views nav > button:not(#viewMode) {
+  min-width: 0;
+  max-width: 0;
+  margin: 0;
+  padding-right: 0;
+  padding-left: 0;
+  border-width: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-24px);
+}
+.all-views #viewMode { margin-left: 0; transform: translateX(-4px); }
 .settings { display: flex; align-items: center; margin-left: auto; }
 .settings span { display: none; }
 .settings button { min-width: 44px; border-left: 1px solid var(--line); }
@@ -388,6 +406,11 @@ body.large-text { --base: 21px; }
   nav > button { width: 100%; text-align: left; border-bottom: 1px solid var(--line); }
   nav .settings { margin: 6px 0 0; padding-top: 6px; justify-content: flex-end; }
   nav .settings span { display: block; margin-right: auto; padding-left: 10px; font-size: .8rem; font-weight: 700; }
+  .all-views header .brand { flex: 0 0 auto; }
+  .all-views header .menu-toggle { display: none; }
+  .all-views header nav { position: static; display: flex; flex: 1; padding: 0; background: transparent; border: 0; box-shadow: none; }
+  .all-views header nav .settings { display: none; }
+  .all-views #viewMode { width: auto; max-width: 150px; margin-left: 0; text-align: center; border-bottom: 1px solid var(--orange); }
   .view { padding: 42px 14px; }
   .hero { margin-bottom: 30px; padding-left: 17px; }
   .hero h1 { font-size: 2.35rem; }

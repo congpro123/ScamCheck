@@ -5,12 +5,12 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#c2410c"><title>ScamCheck — Kiểm tra tin nhắn lừa đảo</title>
   <!-- Đường dẫn tương đối chạy được trên cả Render và GitHub Pages. -->
-  <link rel="stylesheet" href="./styles.css?v=show-all-1">
+  <link rel="stylesheet" href="./styles.css?v=continuous-view-1">
 </head>
 <body>
   <!-- Skip link cho bàn phím và trình đọc màn hình. -->
   <a class="skip" href="#main">Bỏ qua điều hướng</a>
-  <header><button class="brand" data-view="home" aria-label="Về trang kiểm tra"><span class="brand-mark">SC</span><span>ScamCheck</span></button><button id="menuToggle" class="menu-toggle" aria-expanded="false" aria-controls="mainNav" aria-label="Mở mục lục">☰</button><nav id="mainNav" aria-label="Chức năng"><button data-view="home">Kiểm tra</button><button data-view="library">Thư viện</button><button data-view="training">Luyện tập</button><button data-view="history">Lịch sử</button><button data-view="all">Hiện tất cả</button><div class="settings" aria-label="Tuỳ chỉnh hiển thị"><span>Hiển thị</span><button id="contrast" aria-pressed="false" title="Tương phản cao" aria-label="Bật tương phản cao">◐</button><button id="fontSize" title="Phóng to chữ" aria-label="Phóng to chữ">A+</button></div></nav></header>
+  <header><button class="brand" data-view="home" aria-label="Về trang kiểm tra"><span class="brand-mark">SC</span><span>ScamCheck</span></button><button id="menuToggle" class="menu-toggle" aria-expanded="false" aria-controls="mainNav" aria-label="Mở mục lục">☰</button><nav id="mainNav" aria-label="Chức năng"><button data-view="home">Kiểm tra</button><button data-view="library">Thư viện</button><button data-view="training">Luyện tập</button><button data-view="history">Lịch sử</button><button id="viewMode" data-view="all" aria-pressed="false">Xem liền mạch</button><div class="settings" aria-label="Tuỳ chỉnh hiển thị"><span>Hiển thị</span><button id="contrast" aria-pressed="false" title="Tương phản cao" aria-label="Bật tương phản cao">◐</button><button id="fontSize" title="Phóng to chữ" aria-label="Phóng to chữ">A+</button></div></nav></header>
   <!-- Các section bên dưới tạo điều hướng SPA không tải lại trang. -->
   <!-- home: nhập và phân tích tin nhắn. -->
   <!-- library: tra cứu 12 thủ đoạn lừa đảo. -->
@@ -32,6 +32,6 @@
   </main>
   <footer><p>ScamCheck là công cụ giáo dục do nhóm học viên phát triển và không thay thế cảnh báo chính thức từ ngân hàng hoặc cơ quan chức năng.</p></footer>
   <!-- defer bảo đảm DOM sẵn sàng trước khi JavaScript gắn sự kiện. -->
-  <script src="./app.js?v=show-all-1" defer></script>
+  <script src="./app.js?v=continuous-view-1" defer></script>
 </body>
 </html>

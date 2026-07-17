@@ -135,6 +135,12 @@ nav > button, .settings button {
   font-weight: 700;
 }
 nav > button:hover { color: var(--orange-dark); }
+nav > button[data-view="all"] {
+  margin-left: 4px;
+  border: 1px solid var(--orange);
+  background: var(--orange-soft);
+  color: var(--orange-dark);
+}
 .settings { display: flex; align-items: center; margin-left: auto; }
 .settings span { display: none; }
 .settings button { min-width: 44px; border-left: 1px solid var(--line); }
@@ -143,6 +149,8 @@ nav > button:hover { color: var(--orange-dark); }
 /* Mỗi màn hình dùng cùng một cột nội dung để tạo nhịp thị giác nhất quán. */
 .view { display: none; max-width: 1040px; margin: 0 auto; padding: 64px 24px; }
 .view.active { display: block; }
+.all-views .view.active + .view.active { border-top: 1px solid var(--line); }
+.all-views .view.active { scroll-margin-top: 96px; }
 .hero {
   max-width: 820px;
   margin: 0 0 42px;

@@ -183,7 +183,7 @@ nav > button.active .nav-dot {
 .settings button:hover,
 .settings button[aria-pressed="true"] { color: #fff; background: rgba(150, 112, 255, .18); }
 nav > button[data-view="all"] { margin-left: 4px; border: 1px solid var(--line-bright); }
-.all-views nav > button:not(#viewMode) {
+.nav-collapsed nav > button:not(#viewMode) {
   min-width: 0;
   max-width: 0;
   margin: 0;
@@ -194,7 +194,7 @@ nav > button[data-view="all"] { margin-left: 4px; border: 1px solid var(--line-b
   pointer-events: none;
   transform: translateX(-24px);
 }
-.all-views #viewMode { margin-left: 0; transform: translateX(-4px); }
+.nav-collapsed #viewMode { margin-left: 0; transform: translateX(-4px); }
 .menu-toggle { display: none; }
 .mobile-view-mode { display: none; }
 
@@ -207,8 +207,6 @@ main { position: relative; min-height: calc(100vh - 190px); }
   padding: 82px 28px 100px;
 }
 .view.active { display: block; animation: view-enter .6s cubic-bezier(.22, 1, .36, 1) both; }
-.all-views .view.active + .view.active { border-top: 1px solid var(--line); }
-.all-views .view.active { scroll-margin-top: 96px; }
 #home.active {
   display: grid;
   grid-template-columns: minmax(0, .86fr) minmax(480px, 1.14fr);
@@ -724,9 +722,9 @@ body.large-text { --base: 21px; }
   #analyze { min-width: 0; }
   .mobile-view-mode { display: block; min-height: 40px; padding: 7px 10px; color: var(--muted-strong); background: rgba(255, 255, 255, .055); border: 1px solid var(--line-bright); border-radius: 10px; font-size: .62rem; font-weight: 800; white-space: nowrap; }
   nav #viewMode { display: none; }
-  .all-views header .brand { flex: 0 0 auto; }
-  .all-views header .menu-toggle,
-  .all-views header nav { display: none; }
+  .nav-collapsed header .brand { flex: 0 0 auto; }
+  .nav-collapsed header .menu-toggle,
+  .nav-collapsed header nav { display: none; }
   body.light-theme .mobile-view-mode { color: var(--muted-strong); background: rgba(255, 255, 255, .65); }
   .card-grid, .scenario-grid { grid-template-columns: 1fr; }
   .scam-card { min-height: 185px; }

@@ -24,3 +24,10 @@
 - Các kiểm tra iPhone/Android/VoiceOver, xác minh lại tổng đài, ảnh minh chứng và hai lần tập demo cần nhóm ký xác nhận.
 
 Không tuyên bố 50/50 cho đến khi các mục trên có bằng chứng. Ma trận từng mã nằm trong `docs/BACKLOG_STATUS.md`.
+
+## Cập nhật kiểm tra ngày 18/07/2026
+
+- 21/21 automated tests đạt, gồm bài test tập trung 12 ca biên và cơ chế retry 429.
+- Lớp luật trên bộ 60 tin nội bộ tăng từ 60,0% lên 100,0%; recall Nguy hiểm tăng từ 85,0% lên 100,0%. Đây không phải số đo Gemini trên tập ẩn.
+- Đã bổ sung tương phản cao thực sự, chữ nội dung/điều khiển tối thiểu 18px, sửa tràn mobile khi bật A+, ưu tiên Web Share để lưu ảnh trên điện thoại và không tạo ảnh cảnh báo cho kết luận An toàn.
+- Báo cáo đối chiếu mới nằm trong `docs/BACKLOG_AUDIT.md`; số liệu trong `docs/EVALUATION_REPORT.md`.

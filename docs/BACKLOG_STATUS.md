@@ -8,7 +8,7 @@ Quy ước: **Đạt bằng mã/test** có thể kiểm tra trong kho; **Cần n
 | L1-02 | Đạt bằng mã | `public/index.html`, footer cố định; cần Safari iPhone thật |
 | L1-03 | Đạt production bước đầu | `server.js`, JSON schema; 3/3 ca production AI thật đúng cấu trúc, 2,28–2,65 giây; vẫn cần bộ 10 lần chính thức |
 | L1-04 | Đạt bằng test | 5 mẫu sai trong `tests/core.test.js` |
-| L1-05 | Đạt bằng mã/test | lỗi input/mạng/timeout/API, retry 429 tối đa 2 lần |
+| L1-05 | Đạt bằng mã/test | 12 ca biên; retry 429 có test đúng 500ms, 1000ms và tối đa 2 lần |
 | L1-06 | Đạt production | Render public tại `https://scamcheck-vn.onrender.com`, health/frontend/CSS/JS đều HTTP 200 |
 | L1-07 | Đạt bằng mã | 6 lượt/phiên, timeout 18 giây, bộ đếm UI |
 | L1-08 | Đạt bằng mã | nhật ký localStorage, bảng xem và xuất JSON |
@@ -18,12 +18,12 @@ Quy ước: **Đạt bằng mã/test** có thể kiểm tra trong kho; **Cần n
 | L2-04 | Đạt bằng mã | parser luôn trả đúng 3 hành động |
 | L2-05 | Đạt bằng mã | lịch sử tối đa 10, xem lại không gọi API |
 | L2-06 | Đạt bằng mã | 3 mẫu và spinner |
-| L2-07 | Đạt bằng mã/test | validation, URL, prompt injection, nội dung mâu thuẫn và fallback |
-| L2-08 | Đạt tự kiểm | `docs/ACCESSIBILITY.md`; còn VoiceOver/iPhone thật |
+| L2-07 | Đạt bằng test | bài test tập trung đủ 12 ca, gồm link/tệp độc hại và tiêu đề–thân mâu thuẫn |
+| L2-08 | Đạt tự kiểm | chữ/điều khiển ≥18px, 360px + A+ không tràn; còn VoiceOver/iPhone thật |
 | L2-09 | Đạt bằng mã | Web Speech API + fallback micro bàn phím |
 | L2-10 | Đạt bằng mã | xoá một/tất cả và confirm |
 | L3-01 | Đạt bằng mã | prompt và parser giới hạn 2–3 câu |
-| L3-02 | Đạt production | gọi tuần tự, hai phần riêng; hai ca nguy hiểm production hoàn tất 2,28–2,37 giây |
+| L3-02 | Đạt bằng mã/production | gọi tuần tự, hai phần riêng, toàn luồng bị chặn ở 19,5 giây; hai ca production cũ hoàn tất 2,28–2,37 giây |
 | L3-03 | Đạt bằng mã | chỉ gọi khi không An toàn, catch độc lập |
 | L3-04 | Đạt bằng test | guard + luật không cho hạ mức |
 | L3-05 | Đạt bằng test | 60 mẫu, `npm run evaluate` lớn hơn yêu cầu 20 |
@@ -32,8 +32,8 @@ Quy ước: **Đạt bằng mã/test** có thể kiểm tra trong kho; **Cần n
 | L4-02 | Đạt bằng test | chuẩn hoá đồng hình + Levenshtein, test 10 tên miền |
 | L4-03 | Đạt bằng mã | 7 nhóm luật, merge không mâu thuẫn |
 | L4-04 | Đạt bằng dữ liệu | 60 tin cân bằng, 15 tin `hard`, có lý do |
-| L4-05 | Đạt baseline | ma trận, accuracy/recall, 3 điểm yếu; cần lượt Gemini thật |
-| L4-06 | Chưa đủ số liệu | đã sửa model ngừng hoạt động và giảm latency từ timeout xuống 2,28–2,65 giây; chưa chạy đủ 60 tin AI để chứng minh accuracy trước–sau |
+| L4-05 | Đạt baseline lớp luật | ma trận, accuracy/recall, 3 điểm yếu; chưa chạy đủ 60 tin qua Gemini/Thám tử hoàn chỉnh |
+| L4-06 | Đạt logic cục bộ, thiếu số AI | lớp luật tăng 60,0%→100,0%, recall Nguy hiểm 85,0%→100,0%; chưa có số trước–sau Gemini trên tập độc lập |
 | L4-07 | Đạt bằng mã | 10 câu, điểm, giải thích và tổng kết |
 | L4-08 | Chưa đạt hoàn toàn | có trạng thái sớm; chưa stream token Gemini có cấu trúc |
 | L4-09 | Đạt bằng mã | cache 30 tin, tin trùng không tăng lượt |
@@ -45,8 +45,8 @@ Quy ước: **Đạt bằng mã/test** có thể kiểm tra trong kho; **Cần n
 | L5-06 | Đạt bằng test | số ngoài allowlist bị ẩn |
 | L5-07 | Đạt bằng test/tài liệu | 4 test khủng hoảng, `OPERATIONS.md` |
 | L5-08 | Đạt bằng mã | canvas 1080×1080 + QR dẫn về origin |
-| L5-09 | Đạt bằng mã | tải PNG; cần thử thư viện ảnh Android/iPhone thật |
-| L5-10 | Đạt bằng mã | tương phản/phóng chữ, lưu localStorage |
+| L5-09 | Đạt bằng mã | Web Share file trên điện thoại + fallback tải PNG; cần thử thư viện ảnh Android/iPhone thật |
+| L5-10 | Đạt bằng mã | tương phản cao riêng, A+/A−, lưu localStorage; mobile 360px đã kiểm tra |
 | N7-01 | Đạt bằng tài liệu | `README.md`; cần điền thông tin nhóm |
 | N7-02 | Đạt bằng tài liệu | hai sơ đồ Mermaid khớp luồng |
 | N7-03 | Đạt bằng tài liệu | `SLIDES.md`, 9 slide |

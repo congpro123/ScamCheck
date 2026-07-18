@@ -18,6 +18,7 @@ const MODEL = /^(?:gemini-2\.0|gemini-3\.5-flash)(?:-|$)/.test(requestedModel) ?
 // Các trần tài nguyên cố định giúp tránh input quá lớn và request AI treo lâu.
 const MAX_INPUT = 6000;
 const TIMEOUT = 18000;
+const ANALYZE_FLOW_TIMEOUT = 19500;
 const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
 // Người quản trị chỉ cần sửa file văn bản này khi căn cứ pháp lý thay đổi.
 const legalGuidance = fs.readFileSync(path.join(__dirname, 'data', 'legal-guidance.txt'), 'utf8').trim();
@@ -41,7 +42,7 @@ function timeoutPromise(ms) {
   return new Promise((_, reject) => setTimeout(() => reject(Object.assign(new Error('TIMEOUT'), { code: 'TIMEOUT' })), ms));
 }
 
-async function retry(fn, attempts = 3) {
+async function retry(fn, attempts = 3, wait = ms => new Promise(resolve => setTimeout(resolve, ms))) {
   // Chỉ retry lỗi giới hạn tần suất; lỗi khác được trả ngay để không che giấu nguyên nhân.
   let error;
   for (let i = 0; i < attempts; i += 1) {
@@ -49,17 +50,17 @@ async function retry(fn, attempts = 3) {
       error = err;
       const limited = err?.status === 429 || /429|quota|rate/i.test(err?.message || '');
       if (!limited || i === attempts - 1) throw err;
-      await new Promise(resolve => setTimeout(resolve, 500 * (2 ** i)));
+      await wait(500 * (2 ** i));
     }
   }
   throw error;
 }
 
-async function generate(prompt, schema) {
+async function generate(prompt, schema, timeoutMs = TIMEOUT) {
   // API key chỉ được đọc phía server, tuyệt đối không gửi xuống JavaScript trình duyệt.
   if (!genAI) throw Object.assign(new Error('NO_API_KEY'), { code: 'NO_API_KEY' });
   const model = genAI.getGenerativeModel({ model: MODEL, generationConfig: { temperature: 0.1, responseMimeType: 'application/json', ...(schema ? { responseSchema: schema } : {}) } });
-  const result = await Promise.race([retry(() => model.generateContent(prompt)), timeoutPromise(TIMEOUT)]);
+  const result = await Promise.race([retry(() => model.generateContent(prompt)), timeoutPromise(timeoutMs)]);
   return result.response.text();
 }
 
@@ -71,6 +72,7 @@ app.post('/api/analyze', async (req, res) => {
   const text = sanitizeInput(req.body?.text, MAX_INPUT);
   if (!text.ok) return res.status(400).json({ error: text.error });
   const local = analyzeWithRules(text.value);
+  const flowStartedAt = Date.now();
   try {
     const raw = await generate(`${guard}\n${legalGuidance}\nBạn là Thám tử ScamCheck, khô khan, lý tính và thận trọng. Phân loại tin tiếng Việt dựa trên dấu hiệu kỹ thuật, hành vi và bối cảnh; pháp luật chỉ là căn cứ tham chiếu hỗ trợ. Không bao giờ hạ mức rủi ro khi có yêu cầu OTP, chuyển tiền, cài ứng dụng hoặc đường dẫn giả. Trả đúng JSON theo schema; đúng 3 hành động cụ thể. Trích nguyên văn ngắn từ tin cho từng dấu hiệu. Không dùng các cụm khẳng định như "đã phạm tội", "chắc chắn phạm pháp" hoặc kết luận trách nhiệm hình sự.\n<TIN_NHAN>\n${text.value}\n</TIN_NHAN>`, detectiveSchema);
     const detective = mergeAnalysis(parseDetective(raw), local);
@@ -79,7 +81,9 @@ app.post('/api/analyze', async (req, res) => {
     // Cô tâm lý chỉ cần thiết với tin Nghi ngờ/Nguy hiểm, tránh một lượt AI thừa cho tin An toàn.
     if (detective.risk !== 'An toàn') {
       try {
-        const psychRaw = await generate(`${guard}\nBạn là Cô tâm lý, xưng cô và gọi người dùng là bác. Viết 2-3 câu gần gũi giải thích chiêu tâm lý trong tin, không hù doạ, không dạy dỗ. Chỉ trả JSON {"explanation":"..."}.\n<TIN_NHAN>\n${text.value}\n</TIN_NHAN>\n<MUC_RUI_RO>${detective.risk}</MUC_RUI_RO>`);
+        const remainingMs = ANALYZE_FLOW_TIMEOUT - (Date.now() - flowStartedAt);
+        if (remainingMs < 500) throw Object.assign(new Error('TIMEOUT'), { code: 'TIMEOUT' });
+        const psychRaw = await generate(`${guard}\nBạn là Cô tâm lý, xưng cô và gọi người dùng là bác. Viết 2-3 câu gần gũi giải thích chiêu tâm lý trong tin, không hù doạ, không dạy dỗ. Chỉ trả JSON {"explanation":"..."}.\n<TIN_NHAN>\n${text.value}\n</TIN_NHAN>\n<MUC_RUI_RO>${detective.risk}</MUC_RUI_RO>`, undefined, Math.min(TIMEOUT, remainingMs));
         psychology = parsePsychologist(psychRaw);
       } catch (_) { psychologyError = 'Cô tâm lý đang bận, nhưng kết quả Thám tử vẫn đầy đủ.'; }
     }

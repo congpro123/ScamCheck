@@ -21,7 +21,7 @@ Cache, giới hạn lượt, timeout/retry, lịch sử cục bộ, URL/Levensht
 iPhone, nhập giọng nói, chữ ≥18px, AA, tương phản cao, ảnh chia sẻ.
 
 # Slide 8 — Đo lường
-60 tin cân bằng, 15 tin khó, ma trận nhầm lẫn, độ chính xác và độ phủ từ `npm run evaluate`.
+60 tin cân bằng, 15 tin khó. Lớp luật nội bộ tăng từ 60% lên 100%, độ phủ Nguy hiểm từ 85% lên 100%; số này không thay thế đánh giá Gemini trên tập ẩn.
 
 # Slide 9 — Bài học & hướng tới
 Luật bắt tín hiệu chắc chắn; AI hiểu ngữ cảnh. Tiếp tục xác minh tổng đài và đánh giá Gemini thật.

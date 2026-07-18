@@ -349,15 +349,16 @@ textarea:focus {
 .sample,
 .filters button,
 button.danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 46px;
   padding: 10px 18px;
   border-radius: 12px;
   font-weight: 750;
+  text-align: center;
 }
 .primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   gap: 14px;
   color: #fff;
   background: linear-gradient(115deg, #536fff, #8c61f3 58%, #bd64e4);
@@ -442,6 +443,9 @@ mark { padding: 2px 4px; color: #fff; background: rgba(240, 107, 220, .25); bord
 .url-warning { margin: 14px 0; padding: 14px 16px; overflow-wrap: anywhere; color: #ffe4b2; background: rgba(217, 138, 38, .09); border: 1px solid rgba(217, 138, 38, .28); border-radius: 12px; }
 .scenario-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .scenario-grid button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 60px;
   padding: 13px 15px;
   color: var(--muted-strong);
@@ -449,7 +453,7 @@ mark { padding: 2px 4px; color: #fff; background: rgba(240, 107, 220, .25); bord
   border: 1px solid var(--line-bright);
   border-radius: 12px;
   font-weight: 700;
-  text-align: left;
+  text-align: center;
 }
 .scenario-grid button:hover { color: #fff; background: rgba(113, 125, 255, .12); border-color: var(--blue-light); }
 .scenario-grid button.selected { color: #fff; background: linear-gradient(125deg, rgba(83, 111, 255, .4), rgba(159, 103, 255, .36)); border-color: var(--cyan); box-shadow: 0 0 20px rgba(81, 228, 213, .1); }
@@ -785,7 +789,7 @@ html.large-text { --base: 21px; }
   .primary-row { flex-direction: column-reverse; align-items: stretch; }
   .primary-row > button { width: 100%; padding-inline: 10px; }
   #analyze { min-width: 0; }
-  .mobile-view-mode { display: block; min-height: 44px; padding: 7px 10px; color: var(--muted-strong); background: rgba(255, 255, 255, .055); border: 1px solid var(--line-bright); border-radius: 10px; font-size: 1rem; font-weight: 800; }
+  .mobile-view-mode { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; padding: 7px 10px; color: var(--muted-strong); background: rgba(255, 255, 255, .055); border: 1px solid var(--line-bright); border-radius: 10px; font-size: 1rem; font-weight: 800; text-align: center; }
   nav #viewMode { display: none; }
   .nav-collapsed header .brand { flex: 0 0 auto; }
   .nav-collapsed header .menu-toggle,

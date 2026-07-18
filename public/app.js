@@ -38,9 +38,11 @@ function hash(s){let h=2166136261;for(const c of s.trim().toLowerCase())h=(h^c.c
 const viewPaths={home:'/',library:'/library',training:'/training',history:'/history',all:'/all'};
 const pathViews=Object.fromEntries(Object.entries(viewPaths).map(([view,path])=>[path,view]));
 function viewFromPath(){const path=location.pathname.replace(/\/+$/,'')||'/';return pathViews[path]||'home'}
+let sectionView=viewFromPath()==='all'?'home':viewFromPath();
 function showView(id,{updateUrl=false}={}){
   if(!viewPaths[id])id='home';
   const all=id==='all';
+  if(!all)sectionView=id;
   document.body.classList.toggle('all-views',all);
   $$('[data-view="all"]').forEach(b=>{b.textContent=all?'Xem theo mục':'Xem liền mạch';b.setAttribute('aria-pressed',String(all))});
   $$('.view').forEach(x=>x.classList.toggle('active',all||x.id===id));
@@ -54,7 +56,7 @@ function showView(id,{updateUrl=false}={}){
 function clearPreviousResult(){state.analysis=null;state.text='';$('#result').replaceChildren();$('#result').hidden=true;friendlyError('')}
 function closeMenu(){$('header').classList.remove('menu-open');$('#menuToggle').innerHTML='<span aria-hidden="true">☰</span>';$('#menuToggle').setAttribute('aria-expanded','false');$('#menuToggle').setAttribute('aria-label','Mở mục lục')}
 function navigateToView(id,{clearResult=false}={}){if(clearResult&&id==='home')clearPreviousResult();showView(id,{updateUrl:true});closeMenu()}
-$$('[data-view]').forEach(b=>b.onclick=()=>{const id=b.dataset.view==='all'&&document.body.classList.contains('all-views')?'home':b.dataset.view;navigateToView(id,{clearResult:id==='home'})});
+$$('[data-view]').forEach(b=>b.onclick=()=>{const togglesAll=b.dataset.view==='all';const id=togglesAll&&document.body.classList.contains('all-views')?sectionView:b.dataset.view;navigateToView(id,{clearResult:!togglesAll&&id==='home'})});
 addEventListener('popstate',()=>showView(viewFromPath()));
 $('#menuToggle').onclick=()=>{const open=$('header').classList.toggle('menu-open');$('#menuToggle').innerHTML=`<span aria-hidden="true">${open?'×':'☰'}</span>`;$('#menuToggle').setAttribute('aria-expanded',String(open));$('#menuToggle').setAttribute('aria-label',open?'Đóng mục lục':'Mở mục lục')};
 const prefs=load(KEYS.prefs,{}),requestedTheme=new URLSearchParams(location.search).get('theme');document.body.classList.toggle('light-theme',requestedTheme?requestedTheme==='light':!!prefs.light);document.body.classList.toggle('large-text',!!prefs.large);

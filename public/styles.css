@@ -212,13 +212,16 @@ main { position: relative; min-height: calc(100vh - 190px); }
   margin: 0 auto;
   padding: 82px 28px 100px;
 }
-.view.active { display: block; animation: view-enter .6s cubic-bezier(.22, 1, .36, 1) both; }
-#home.active {
+.view.active,
+body.all-views .view { display: block; animation: view-enter .6s cubic-bezier(.22, 1, .36, 1) both; }
+#home.active,
+body.all-views #home {
   display: grid;
   grid-template-columns: minmax(0, .86fr) minmax(480px, 1.14fr);
   align-items: center;
   gap: 58px;
 }
+body.all-views .view + .view { border-top: 1px solid var(--line); }
 #home > #loading,
 #home > #result { grid-column: 1 / -1; width: 100%; }
 .hero { position: relative; }
@@ -775,7 +778,7 @@ html.large-text { --base: 21px; }
   nav .settings { justify-content: flex-end; margin: 6px 0 0; padding: 7px 0 0; border-top: 1px solid var(--line); border-left: 0; }
   nav .settings > span { display: block; margin-right: auto; padding-left: 10px; color: var(--muted); font-size: 1rem; font-weight: 700; }
   .view { padding: 60px 16px 74px; }
-  #home.active { gap: 34px; }
+  #home.active, body.all-views #home { gap: 34px; }
   .hero h1 { font-size: clamp(2.4rem, 13vw, 3.5rem); }
   .section-head h1 { font-size: clamp(2.25rem, 12vw, 3.4rem); }
   .hero > p:not(.eyebrow) { font-size: 1rem; }

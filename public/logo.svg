@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">ScamCheck</title>
+  <defs>
+    <linearGradient id="aurora" x1="8" y1="6" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#51E4D5"/>
+      <stop offset=".42" stop-color="#6078FF"/>
+      <stop offset=".72" stop-color="#9F67FF"/>
+      <stop offset="1" stop-color="#F06BDC"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="18" y1="12" x2="44" y2="50" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff" stop-opacity=".34"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#aurora)" d="M32 3.5 56 12v17.2c0 14.8-9.7 25.8-24 31.3C17.7 55 8 44 8 29.2V12l24-8.5Z"/>
+  <path fill="url(#shine)" d="M32 7.7 52 15v14.2c0 11.8-7.2 21-20 26.4V7.7Z"/>
+  <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="5.2" d="m20.5 31.5 7.2 7.2 16-17"/>
+</svg>

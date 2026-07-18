@@ -4,6 +4,28 @@ const OFFICIAL = ['vietcombank.com.vn', 'bidv.com.vn', 'vietinbank.vn', 'agriban
 // Danh sách dịch vụ rút gọn cần cảnh báo vì người dùng không nhìn thấy đích thật.
 const SHORTENERS = new Set(['bit.ly', 'tinyurl.com', 't.co', 'goo.gl', 'shorturl.at', 'is.gd', 'cutt.ly']);
 
+function foldVietnamese(text) {
+  return String(text).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/giu, 'd').toLowerCase();
+}
+
+function isOtpSafetyNotice(text) {
+  const folded = foldVietnamese(text);
+  const code = '(?:otp|ma\\s+xac\\s+(?:minh|thuc))';
+  const warnsNotToShare = new RegExp(`(?:khong|tuyet doi khong)\\s+(?:duoc\\s+)?(?:chia se|cung cap|dua|gui|tiet lo)[^.!?\\n]{0,45}\\b${code}\\b|\\b${code}\\b[^.!?\\n]{0,45}(?:khong|tuyet doi khong)\\s+(?:duoc\\s+)?(?:chia se|cung cap|dua|gui|tiet lo)`, 'u').test(folded);
+  const onlyUseOfficially = new RegExp(`(?:chi\\s+)?nhap\\s+(?:\\b${code}\\b\\s+)?(?:tren|trong)\\s+(?:ung dung|app|trang|website)\\s+chinh thuc|\\b${code}\\b[^.!?\\n]{0,55}chi\\s+nhap\\s+(?:tren|trong)\\s+(?:ung dung|app|trang|website)\\s+chinh thuc`, 'u').test(folded);
+  const asksForOtp = new RegExp(`(?:doc|chia se|cung cap|dua|bao)\\s+(?:ma\\s+)?(?:otp|xac minh|xac thuc)\\b|gui\\s+(?:ma\\s+)?(?:otp|xac minh|xac thuc)\\s+(?:cho|qua|vao)\\b`, 'u').test(folded);
+  const otherDanger = /https?:\/\/|www\.|\b(?:chuyen (?:khoan|tien)|stk|so tai khoan|mat khau|password|cvv|so the)\b|(?:cai|tai).*(?:apk|ung dung|app)/u.test(folded);
+  return new RegExp(`\\b${code}\\b`, 'u').test(folded) && (warnsNotToShare || onlyUseOfficially) && !asksForOtp && !otherDanger;
+}
+
+function isPasswordSafetyAdvice(text) {
+  const folded = foldVietnamese(text);
+  const advice = /(?:doi|thay)\s+mat khau\s+(?:dinh ky|thuong xuyen)|(?:bat|dung|su dung)\s+(?:xac thuc|bao mat)\s+(?:hai|2)\s+(?:lop|yeu to)|xac thuc\s+(?:hai|2)\s+(?:lop|yeu to)/u.test(folded);
+  const requestsSecret = /(?:gui|doc|chia se|cung cap|dua|bao|nhap)\s+mat khau\b/u.test(folded);
+  const externalAction = /https?:\/\/|www\.|\b(?:chuyen (?:khoan|tien)|stk|so tai khoan|otp|cvv|so the)\b|(?:cai|tai).*(?:apk|ung dung|app)/u.test(folded);
+  return advice && !requestsSecret && !externalAction;
+}
+
 function sanitizeInput(value, max = 6000) {
   // Loại ký tự điều khiển, chặn chuỗi rỗng/quá ngắn/quá dài trước khi gọi AI.
   if (typeof value !== 'string') return { ok: false, error: 'Vui lòng nhập nội dung tin nhắn.' };
@@ -63,24 +85,35 @@ const RULES = [
 function analyzeWithRules(text) {
   // Gom dấu hiệu từ từ khóa và URL, sau đó nâng mức rủi ro nếu có tín hiệu nghiêm trọng.
   const signals = [];
+  const otpSafetyNotice = isOtpSafetyNotice(text);
+  const passwordSafetyAdvice = isPasswordSafetyAdvice(text);
+  const securityAdvice = otpSafetyNotice || passwordSafetyAdvice;
   for (const rule of RULES) {
+    if (otpSafetyNotice && /otp/i.test(rule.re.source)) continue;
+    if (passwordSafetyAdvice && /password/i.test(rule.re.source)) continue;
     const match = text.match(rule.re);
     if (match) signals.push({ reason: rule.reason, quote: match[0] });
   }
   const urls = extractUrls(text).map(inspectDomain).filter(Boolean);
   urls.filter(x => x.suspicious).forEach(x => signals.push({ reason: x.reason, quote: x.url }));
   const severe = signals.some(x => /mã xác thực|giao dịch|Mạo danh|cài ứng dụng|nhạy cảm|không chính thức/i.test(x.reason));
-  return { risk: severe ? 'Nguy hiểm' : signals.length ? 'Nghi ngờ' : 'An toàn', signals, urls };
+  if (otpSafetyNotice && signals.length === 0) signals.push({ reason: 'Tin nhắn hướng dẫn bảo vệ mã xác minh và không yêu cầu gửi mã cho người khác.', quote: text.match(/[^.!?\n]*(?:otp|mã xác minh|ma xac minh|mã xác thực|ma xac thuc)[^.!?\n]*/iu)?.[0]?.trim() || 'Mã xác minh' });
+  if (passwordSafetyAdvice && signals.length === 0) signals.push({ reason: 'Đây là lời khuyên tăng cường bảo mật, không yêu cầu cung cấp mật khẩu.', quote: text.trim() });
+  return { risk: securityAdvice && !severe ? 'An toàn' : severe ? 'Nguy hiểm' : signals.length ? 'Nghi ngờ' : 'An toàn', signals, urls, otpSafetyNotice, passwordSafetyAdvice, securityAdvice };
 }
 
 function mergeAnalysis(ai, local) {
   // AI không bao giờ được phép hạ mức cảnh báo mà lớp luật đã xác định.
   const rank = { 'An toàn': 0, 'Nghi ngờ': 1, 'Nguy hiểm': 2 };
   const base = ai || { risk: 'Nghi ngờ', signals: [], actions: [] };
-  const risk = rank[local.risk] > rank[base.risk] ? local.risk : base.risk;
-  const signals = [...local.signals, ...base.signals].filter((x, i, a) => i === a.findIndex(y => y.reason === x.reason && y.quote === x.quote)).slice(0, 8);
-  const defaults = ['Không bấm đường dẫn hoặc tải ứng dụng lạ.', 'Liên hệ tổ chức qua số chính thức tự tìm.', 'Không cung cấp OTP, mật khẩu hoặc chuyển tiền.'];
-  return { risk, signals, actions: [...(base.actions || []), ...defaults].filter(Boolean).slice(0, 3) };
+  const risk = local.securityAdvice ? 'An toàn' : rank[local.risk] > rank[base.risk] ? local.risk : base.risk;
+  const signals = (local.securityAdvice ? local.signals : [...local.signals, ...base.signals]).filter((x, i, a) => i === a.findIndex(y => y.reason === x.reason && y.quote === x.quote)).slice(0, 8);
+  const defaults = local.otpSafetyNotice
+    ? ['Tuyệt đối không cung cấp mã OTP hoặc mã xác minh cho bất kỳ ai.', 'Chỉ nhập mã trong ứng dụng hoặc trang chính thức do bác tự mở.', 'Nếu bác không thực hiện giao dịch này, hãy liên hệ tổ chức qua kênh chính thức.']
+    : local.passwordSafetyAdvice
+      ? ['Đổi mật khẩu trong ứng dụng hoặc trang chính thức do bác tự mở.', 'Dùng mật khẩu mạnh, riêng biệt và không cung cấp cho bất kỳ ai.', 'Bật xác thực hai lớp để tăng bảo vệ tài khoản.']
+    : ['Không bấm đường dẫn hoặc tải ứng dụng lạ.', 'Liên hệ tổ chức qua số chính thức tự tìm.', 'Không cung cấp OTP, mật khẩu hoặc chuyển tiền.'];
+  return { risk, signals, actions: local.securityAdvice ? defaults : [...(base.actions || []), ...defaults].filter(Boolean).slice(0, 3) };
 }
 
-module.exports = { sanitizeInput, extractUrls, inspectDomain, levenshtein, analyzeWithRules, mergeAnalysis };
+module.exports = { sanitizeInput, extractUrls, inspectDomain, levenshtein, analyzeWithRules, mergeAnalysis, isOtpSafetyNotice, isPasswordSafetyAdvice };

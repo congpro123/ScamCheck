@@ -35,26 +35,24 @@ function esc(v=''){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt
 // Hash chỉ dùng nhận diện tin trùng trong cache, không dùng cho mục đích bảo mật.
 function hash(s){let h=2166136261;for(const c of s.trim().toLowerCase())h=(h^c.charCodeAt(0))*16777619;return (h>>>0).toString(36)}
 // Điều hướng kiểu SPA: mỗi section có URL riêng và vẫn không phải tải lại toàn trang.
-const viewPaths={home:'/',library:'/library',training:'/training',history:'/history',all:'/all'};
+const viewPaths={home:'/',library:'/library',training:'/training',history:'/history'};
 const pathViews=Object.fromEntries(Object.entries(viewPaths).map(([view,path])=>[path,view]));
 function viewFromPath(){const path=location.pathname.replace(/\/+$/,'')||'/';return pathViews[path]||'home'}
 function showView(id,{updateUrl=false}={}){
   if(!viewPaths[id])id='home';
-  const all=id==='all';
-  document.body.classList.toggle('all-views',all);
-  $$('[data-view="all"]').forEach(b=>{b.textContent=all?'Xem theo mục':'Xem liền mạch';b.setAttribute('aria-pressed',String(all))});
-  $$('.view').forEach(x=>x.classList.toggle('active',all||x.id===id));
-  $$('nav [data-view]').forEach(b=>{const active=!all&&b.dataset.view===id;b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
-  if(all||id==='history')renderHistory();
-  if(all||id==='library')renderLibrary('Tất cả');
-  if((all||id==='training')&&!$('#quiz').hasChildNodes())renderQuiz();
+  $$('.view').forEach(x=>x.classList.toggle('active',x.id===id));
+  $$('nav [data-view]').forEach(b=>{const active=b.dataset.view===id;b.classList.toggle('active',active);if(active)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
+  if(id==='history')renderHistory();
+  if(id==='library')renderLibrary('Tất cả');
+  if(id==='training'&&!$('#quiz').hasChildNodes())renderQuiz();
   if(updateUrl&&location.pathname!==viewPaths[id])history.pushState({view:id},'',viewPaths[id]);
   scrollTo(0,0)
 }
 function clearPreviousResult(){state.analysis=null;state.text='';$('#result').replaceChildren();$('#result').hidden=true;friendlyError('')}
 function closeMenu(){$('header').classList.remove('menu-open');$('#menuToggle').innerHTML='<span aria-hidden="true">☰</span>';$('#menuToggle').setAttribute('aria-expanded','false');$('#menuToggle').setAttribute('aria-label','Mở mục lục')}
 function navigateToView(id,{clearResult=false}={}){if(clearResult&&id==='home')clearPreviousResult();showView(id,{updateUrl:true});closeMenu()}
-$$('[data-view]').forEach(b=>b.onclick=()=>{const id=b.dataset.view==='all'&&document.body.classList.contains('all-views')?'home':b.dataset.view;navigateToView(id,{clearResult:id==='home'})});
+function toggleNavigation(){const collapsed=document.body.classList.toggle('nav-collapsed');$$('[data-view="all"]').forEach(b=>{b.textContent=collapsed?'Xem theo mục':'Xem liền mạch';b.setAttribute('aria-pressed',String(collapsed))})}
+$$('[data-view]').forEach(b=>b.onclick=()=>{if(b.dataset.view==='all'){toggleNavigation();closeMenu();return}navigateToView(b.dataset.view,{clearResult:b.dataset.view==='home'})});
 addEventListener('popstate',()=>showView(viewFromPath()));
 $('#menuToggle').onclick=()=>{const open=$('header').classList.toggle('menu-open');$('#menuToggle').innerHTML=`<span aria-hidden="true">${open?'×':'☰'}</span>`;$('#menuToggle').setAttribute('aria-expanded',String(open));$('#menuToggle').setAttribute('aria-label',open?'Đóng mục lục':'Mở mục lục')};
 const prefs=load(KEYS.prefs,{}),requestedTheme=new URLSearchParams(location.search).get('theme');document.body.classList.toggle('light-theme',requestedTheme?requestedTheme==='light':!!prefs.light);document.body.classList.toggle('large-text',!!prefs.large);

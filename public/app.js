@@ -42,7 +42,8 @@ const syncHeader=()=>{$('header').classList.toggle('is-scrolled',scrollY>24)};ad
 const prefs=load(KEYS.prefs,{});document.body.classList.toggle('high-contrast',!!prefs.contrast);document.body.classList.toggle('large-text',!!prefs.large);
 $('#contrast').onclick=()=>{document.body.classList.toggle('high-contrast');save(KEYS.prefs,{...load(KEYS.prefs,{}),contrast:document.body.classList.contains('high-contrast')})};
 $('#fontSize').onclick=()=>{document.body.classList.toggle('large-text');save(KEYS.prefs,{...load(KEYS.prefs,{}),large:document.body.classList.contains('large-text')})};
-$('#message').oninput=e=>$('#counter').textContent=`${e.target.value.length} / 6000`; $$('.sample').forEach(b=>b.onclick=()=>{$('#message').value=samples[b.dataset.sample];$('#message').dispatchEvent(new Event('input'));$('#message').focus()});
+const INPUT_LIMIT_WARNING='Bác đã nhập đủ giới hạn 6.000 ký tự. Hãy rút gọn nội dung trước khi thêm thông tin mới.';
+$('#message').oninput=e=>{const length=e.target.value.length;$('#counter').textContent=`${length} / 6000`;if(length>=6000)friendlyError(INPUT_LIMIT_WARNING);else if($('#error').textContent===INPUT_LIMIT_WARNING)friendlyError('')}; $$('.sample').forEach(b=>b.onclick=()=>{$('#message').value=samples[b.dataset.sample];$('#message').dispatchEvent(new Event('input'));$('#message').focus()});
 function setBusy(v){$('#loading').hidden=!v;$('#analyze').disabled=v;$('#speak').disabled=v}
 function friendlyError(msg){$('#error').textContent=msg;$('#error').hidden=!msg}
 // Mỗi request client có AbortController để không chờ vô hạn khi mạng yếu.

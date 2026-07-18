@@ -35,15 +35,34 @@ function esc(v=''){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt
 // Hash chỉ dùng nhận diện tin trùng trong cache, không dùng cho mục đích bảo mật.
 function hash(s){let h=2166136261;for(const c of s.trim().toLowerCase())h=(h^c.charCodeAt(0))*16777619;return (h>>>0).toString(36)}
 // Điều hướng kiểu SPA: đổi section đang hiển thị mà không tải lại toàn trang.
-function showView(id){const all=id==='all';document.body.classList.toggle('all-views',all);$$('[data-view="all"]').forEach(b=>{b.textContent=all?'Xem theo mục':'Xem liền mạch';b.setAttribute('aria-pressed',String(all))});$$('.view').forEach(x=>x.classList.toggle('active',all||x.id===id));if(all||id==='history')renderHistory();if(all||id==='library')renderLibrary('Tất cả');if((all||id==='training')&&!$('#quiz').hasChildNodes())renderQuiz();scrollTo(0,0)}
-$$('[data-view]').forEach(b=>b.onclick=()=>{const id=b.dataset.view==='all'&&document.body.classList.contains('all-views')?'home':b.dataset.view;showView(id);$('header').classList.remove('menu-open');$('#menuToggle').textContent='☰';$('#menuToggle').setAttribute('aria-expanded','false');$('#menuToggle').setAttribute('aria-label','Mở mục lục')});
-$('#menuToggle').onclick=()=>{const open=$('header').classList.toggle('menu-open');$('#menuToggle').textContent=open?'×':'☰';$('#menuToggle').setAttribute('aria-expanded',String(open));$('#menuToggle').setAttribute('aria-label',open?'Đóng mục lục':'Mở mục lục')};
-const syncHeader=()=>{$('header').classList.toggle('is-scrolled',scrollY>24)};addEventListener('scroll',syncHeader,{passive:true});syncHeader();
-const prefs=load(KEYS.prefs,{});document.body.classList.toggle('high-contrast',!!prefs.contrast);document.body.classList.toggle('large-text',!!prefs.large);
-$('#contrast').onclick=()=>{document.body.classList.toggle('high-contrast');save(KEYS.prefs,{...load(KEYS.prefs,{}),contrast:document.body.classList.contains('high-contrast')})};
-$('#fontSize').onclick=()=>{document.body.classList.toggle('large-text');save(KEYS.prefs,{...load(KEYS.prefs,{}),large:document.body.classList.contains('large-text')})};
-const INPUT_LIMIT_WARNING='Bác đã nhập đủ giới hạn 6.000 ký tự. Hãy rút gọn nội dung trước khi thêm thông tin mới.';
-$('#message').oninput=e=>{const length=e.target.value.length;$('#counter').textContent=`${length} / 6000`;if(length>=6000)friendlyError(INPUT_LIMIT_WARNING);else if($('#error').textContent===INPUT_LIMIT_WARNING)friendlyError('')}; $$('.sample').forEach(b=>b.onclick=()=>{$('#message').value=samples[b.dataset.sample];$('#message').dispatchEvent(new Event('input'));$('#message').focus()});
+function showView(id){
+  const all=id==='all';
+  document.body.classList.toggle('all-views',all);
+  $$('[data-view="all"]').forEach(b=>{b.textContent=all?'Xem theo mục':'Xem liền mạch';b.setAttribute('aria-pressed',String(all))});
+  $$('.view').forEach(x=>x.classList.toggle('active',all||x.id===id));
+  $$('nav [data-view]').forEach(x=>{const active=x.dataset.view===id;x.classList.toggle('active',active);if(active)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});
+  if(all||id==='history')renderHistory();
+  if(all||id==='library')renderLibrary('Tất cả');
+  if((all||id==='training')&&!$('#quiz').hasChildNodes())renderQuiz();
+  scrollTo(0,0)
+}
+ function closeMenu(){
+   $('header').classList.remove('menu-open');
+   $('#menuToggle').innerHTML='<span aria-hidden="true">☰</span>';
+  $('#menuToggle').setAttribute('aria-expanded','false');
+  $('#menuToggle').setAttribute('aria-label','Mở mục lục')
+}
+ $$('[data-view]').forEach(b=>b.onclick=()=>{const id=b.dataset.view==='all'&&document.body.classList.contains('all-views')?'home':b.dataset.view;showView(id);closeMenu()});
+$('#menuToggle').onclick=()=>{const open=$('header').classList.toggle('menu-open');$('#menuToggle').innerHTML=`<span aria-hidden="true">${open?'×':'☰'}</span>`;$('#menuToggle').setAttribute('aria-expanded',String(open));$('#menuToggle').setAttribute('aria-label',open?'Đóng mục lục':'Mở mục lục')};
+const prefs=load(KEYS.prefs,{}),requestedTheme=new URLSearchParams(location.search).get('theme');document.body.classList.toggle('light-theme',requestedTheme?requestedTheme==='light':!!prefs.light);document.body.classList.toggle('large-text',!!prefs.large);
+function syncDisplayControls(){const light=document.body.classList.contains('light-theme'),large=document.body.classList.contains('large-text'),themeColor=document.querySelector('meta[name="theme-color"]');$('#themeToggle').setAttribute('aria-pressed',String(light));$('#themeToggle').setAttribute('aria-label',light?'Dùng giao diện tối':'Dùng giao diện sáng');$('#themeToggle').setAttribute('title',light?'Dùng giao diện tối':'Dùng giao diện sáng');$('#themeToggle').innerHTML=`<span aria-hidden="true">${light?'☾':'☼'}</span>`;$('#fontSize').setAttribute('aria-pressed',String(large));$('#fontSize').setAttribute('aria-label',large?'Thu nhỏ chữ':'Phóng to chữ');document.documentElement.style.colorScheme=light?'light':'dark';if(themeColor)themeColor.content=light?'#f7f8ff':'#070b1d'}
+$('#themeToggle').onclick=()=>{document.body.classList.toggle('light-theme');save(KEYS.prefs,{...load(KEYS.prefs,{}),light:document.body.classList.contains('light-theme')});syncDisplayControls()};
+$('#fontSize').onclick=()=>{document.body.classList.toggle('large-text');save(KEYS.prefs,{...load(KEYS.prefs,{}),large:document.body.classList.contains('large-text')});syncDisplayControls()};
+syncDisplayControls();
+const requestedView=new URLSearchParams(location.search).get('view');
+ showView(['home','library','training','history','all'].includes(requestedView)?requestedView:'home');
+ const INPUT_LIMIT_WARNING='Bác đã nhập đủ giới hạn 6.000 ký tự. Hãy rút gọn nội dung trước khi thêm thông tin mới.';
+ $('#message').oninput=e=>{const length=e.target.value.length;$('#counter').textContent=`${length} / 6000`;if(length>=6000)friendlyError(INPUT_LIMIT_WARNING);else if($('#error').textContent===INPUT_LIMIT_WARNING)friendlyError('')}; $$('.sample').forEach(b=>b.onclick=()=>{$('#message').value=samples[b.dataset.sample];$('#message').dispatchEvent(new Event('input'));$('#message').focus()});
 function setBusy(v){$('#loading').hidden=!v;$('#analyze').disabled=v;$('#speak').disabled=v}
 function friendlyError(msg){$('#error').textContent=msg;$('#error').hidden=!msg}
 // Mỗi request client có AbortController để không chờ vô hạn khi mạng yếu.
@@ -61,7 +80,27 @@ function renderResult(data,cached){const d=data.detective,cls=d.risk==='An toàn
 // Câu nói mẫu chỉ hiện ở bước cần giao tiếp, không hiện cho thao tác tự thực hiện.
 async function respond(button){$$('[data-scenario]').forEach(x=>x.disabled=true);button.classList.add('selected');if(button.dataset.scenario==='none'){$('#response').innerHTML='<p class="notice">Chúc mừng bác!</p>';return}$('#response').innerHTML='<p>Đang chuẩn bị các bước khẩn cấp…</p>';try{const r=await post('/api/respond',{text:state.text,scenario:button.dataset.scenario});const contacts=(r.contacts||[]).map(x=>`<li><a href="tel:${esc(x.phone)}"><strong>${esc(x.phone)}</strong></a> — ${esc(x.name)}<br><span>${esc(x.purpose)}</span></li>`).join('');$('#response').innerHTML=`<h3>Các bước ứng cứu cụ thể</h3><ol class="steps">${r.steps.map(x=>{const needsScript=/(gọi|liên hệ|trình báo|phản ánh|báo cho|yêu cầu|đề nghị)/iu.test(x.action);return `<li><strong>${esc(x.action)}</strong>${needsScript&&x.script?`<br><em>Câu nói mẫu: “${esc(x.script)}”</em>`:''}</li>`}).join('')}</ol>${contacts?`<section class="response-contacts" aria-labelledby="contactTitle"><h3 id="contactTitle">Số cần gọi</h3><ul>${contacts}</ul><p><small>Ưu tiên số trong ứng dụng chính thức hoặc mặt sau thẻ ngân hàng. Không gọi số do người lạ gửi.</small></p></section>`:''}` }catch{$('#response').innerHTML='<p class="notice error">Chưa tải được hướng dẫn. Nếu đã mất tiền, gọi ngay số chính thức trong ứng dụng hoặc mặt sau thẻ ngân hàng, chuẩn bị mã giao dịch và đến công an gần nhất.</p>'}}
 // Canvas 1080×1080 phù hợp chia sẻ; QR lấy từ server để không lộ dữ liệu hoặc phụ thuộc CDN.
-async function drawCard(d){const c=$('#shareCard'),x=c.getContext('2d'),color=d.risk==='An toàn'?'#08783e':d.risk==='Nghi ngờ'?'#8a5700':'#b42318';x.fillStyle='#fff7ed';x.fillRect(0,0,1080,1080);x.fillStyle='#c2410c';x.font='bold 58px sans-serif';x.fillText('🛡 ScamCheck',70,105);x.fillStyle=color;x.fillRect(70,165,940,190);x.fillStyle='#fff';x.font='bold 78px sans-serif';x.fillText(d.risk,110,285);x.fillStyle='#171717';x.font='bold 42px sans-serif';x.fillText('Dấu hiệu chính',70,440);x.font='34px sans-serif';wrap(x,(d.signals[0]?.reason||'Chưa thấy dấu hiệu rõ ràng'),70,500,690,48);x.font='30px sans-serif';wrap(x,'Hãy tự liên hệ tổ chức qua kênh chính thức. Không cung cấp OTP hoặc chuyển tiền.',70,700,650,44);x.font='26px sans-serif';x.fillStyle='#44403c';x.fillText(location.origin,70,995);try{const img=new Image();img.crossOrigin='anonymous';await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src='/api/qr'});x.fillStyle='#fff';x.fillRect(760,690,270,320);x.drawImage(img,770,700,250,250);x.fillStyle='#171717';x.font='bold 24px sans-serif';x.textAlign='center';x.fillText('Quét để mở ScamCheck',895,985);x.textAlign='left'}catch{}}
+async function drawCard(d){
+  const c=$('#shareCard'),x=c.getContext('2d'),color=d.risk==='An toàn'?'#18b785':d.risk==='Nghi ngờ'?'#d98a26':'#ef5671';
+  const bg=x.createLinearGradient(0,0,1080,1080),glow=x.createRadialGradient(900,120,10,900,120,520);
+  bg.addColorStop(0,'#111a42');bg.addColorStop(.5,'#080d25');bg.addColorStop(1,'#040611');
+  x.fillStyle=bg;x.fillRect(0,0,1080,1080);
+  glow.addColorStop(0,'rgba(159,103,255,.55)');glow.addColorStop(.55,'rgba(96,120,255,.16)');glow.addColorStop(1,'rgba(5,7,21,0)');
+  x.fillStyle=glow;x.fillRect(0,0,1080,1080);
+  try{const logo=new Image();await new Promise((resolve,reject)=>{logo.onload=resolve;logo.onerror=reject;logo.src='./logo.svg'});x.drawImage(logo,64,53,74,74)}catch{}
+  x.fillStyle='#fff';x.font='800 48px Manrope, sans-serif';x.fillText('ScamCheck',158,103);
+  x.fillStyle='rgba(255,255,255,.6)';x.font='700 20px Manrope, sans-serif';x.fillText('SAFE DIGITAL SPACE',159,133);
+  x.fillStyle='rgba(255,255,255,.07)';x.strokeStyle='rgba(191,201,255,.2)';x.lineWidth=2;x.beginPath();x.roundRect(70,190,940,190,28);x.fill();x.stroke();
+  x.fillStyle=color;x.beginPath();x.roundRect(70,190,12,190,8);x.fill();
+  x.fillStyle='rgba(255,255,255,.62)';x.font='800 22px Manrope, sans-serif';x.fillText('KẾT QUẢ KIỂM TRA',110,245);
+  x.fillStyle='#fff';x.font='800 76px Manrope, sans-serif';x.fillText(d.risk,110,330);
+  x.font='800 38px Manrope, sans-serif';x.fillText('Dấu hiệu chính',70,470);
+  x.fillStyle='rgba(230,234,255,.82)';x.font='500 32px Manrope, sans-serif';wrap(x,(d.signals[0]?.reason||'Chưa thấy dấu hiệu rõ ràng'),70,530,690,47);
+  x.fillStyle='rgba(81,228,213,.12)';x.strokeStyle='rgba(81,228,213,.3)';x.beginPath();x.roundRect(70,700,650,150,24);x.fill();x.stroke();
+  x.fillStyle='#dffdfa';x.font='600 27px Manrope, sans-serif';wrap(x,'Hãy tự liên hệ tổ chức qua kênh chính thức. Không cung cấp OTP hoặc chuyển tiền.',98,755,590,40);
+  x.font='500 23px Manrope, sans-serif';x.fillStyle='rgba(210,218,246,.58)';x.fillText(location.origin,70,1000);
+  try{const img=new Image();img.crossOrigin='anonymous';await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src='/api/qr'});x.fillStyle='#fff';x.beginPath();x.roundRect(770,695,250,300,22);x.fill();x.drawImage(img,785,710,220,220);x.fillStyle='#080d25';x.font='800 20px Manrope, sans-serif';x.textAlign='center';x.fillText('Quét để kiểm tra',895,965);x.textAlign='left'}catch{}
+}
 function wrap(ctx,text,x,y,max,line){const words=text.split(' ');let s='';for(const w of words){if(ctx.measureText(s+w).width>max){ctx.fillText(s,x,y);s=w+' ';y+=line}else s+=w+' '}ctx.fillText(s,x,y)}function downloadCard(){const a=document.createElement('a');a.download=`scamcheck-${Date.now()}.png`;a.href=$('#shareCard').toDataURL('image/png');a.click()}
 function formatDateTime(value){return new Intl.DateTimeFormat('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).format(new Date(value))}
 function renderHistory(){const list=load(KEYS.history,[]);$('#historyList').innerHTML=list.length?list.map((x,i)=>`<article class="history-card"><small>${formatDateTime(x.at)}</small><h2>${esc(x.data.detective.risk)}</h2><p>${esc(x.text.slice(0,180))}</p><button class="secondary open-history" data-i="${i}">Xem lại</button><button class="danger delete-history" data-i="${i}">Xoá</button></article>`).join(''):'<div class="panel"><p>Chưa có tin nào được lưu.</p></div>';const logs=load(KEYS.logs,[]);$('#callLogs').innerHTML=logs.length?`<div class="log-table" role="region" aria-label="Nhật ký gọi AI" tabindex="0"><table><thead><tr><th>Ngày và giờ</th><th>Ký tự</th><th>Kết quả</th><th>Thời gian xử lý</th><th>Nguồn</th></tr></thead><tbody>${logs.map(x=>`<tr><td>${formatDateTime(x.at)}</td><td>${x.inputLength}</td><td>${esc(x.risk)}</td><td>${x.durationMs} ms</td><td>${x.ai?'Gemini + luật':'Luật'}</td></tr>`).join('')}</tbody></table></div>`:'<p>Chưa có lần gọi nào trong phiên.</p>';$$('.open-history').forEach(b=>b.onclick=()=>{const x=load(KEYS.history,[])[+b.dataset.i];state.text=x.text;state.analysis=x.data;$('#message').value=x.text;showView('home');renderResult(x.data,true)});$$('.delete-history').forEach(b=>b.onclick=()=>{if(confirm('Xoá tin này khỏi lịch sử?')){const l=load(KEYS.history,[]);l.splice(+b.dataset.i,1);save(KEYS.history,l);renderHistory()}})}

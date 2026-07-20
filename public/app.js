@@ -50,21 +50,9 @@ function showView(id,{updateUrl=false}={}){
 }
 function clearPreviousResult(){state.analysis=null;state.text='';$('#result').replaceChildren();$('#result').hidden=true;friendlyError('')}
 function closeMenu(){$('header').classList.remove('menu-open');$('#menuToggle').innerHTML='<span aria-hidden="true">☰</span>';$('#menuToggle').setAttribute('aria-expanded','false');$('#menuToggle').setAttribute('aria-label','Mở mục lục')}
-function syncContinuousControls(enabled){$$('[data-view="all"]').forEach(b=>{b.textContent=enabled?'Xem theo mục':'Xem liền mạch';b.setAttribute('aria-pressed',String(enabled))})}
-function leaveContinuousMode(){document.body.classList.remove('all-views','nav-collapsed');syncContinuousControls(false)}
-function navigateToView(id,{clearResult=false}={}){leaveContinuousMode();if(clearResult&&id==='home')clearPreviousResult();showView(id,{updateUrl:true});closeMenu()}
-function toggleNavigation(){
-  const enabled=!document.body.classList.contains('all-views');
-  const current=$('.view.active')?.id||viewFromPath();
-  document.body.classList.toggle('all-views',enabled);
-  document.body.classList.toggle('nav-collapsed',enabled);
-  syncContinuousControls(enabled);
-  if(enabled){renderHistory();renderLibrary('Tất cả');if(!$('#quiz').hasChildNodes())renderQuiz()}
-  const anchor=$(`#${current}`),headerHeight=$('header').getBoundingClientRect().height;
-  requestAnimationFrame(()=>{const top=enabled?Math.max(0,scrollY+anchor.getBoundingClientRect().top-headerHeight-16):0;scrollTo({top,behavior:'auto'})})
-}
-$$('[data-view]').forEach(b=>b.onclick=()=>{if(b.dataset.view==='all'){toggleNavigation();closeMenu();return}navigateToView(b.dataset.view,{clearResult:b.dataset.view==='home'})});
-addEventListener('popstate',()=>{leaveContinuousMode();showView(viewFromPath())});
+function navigateToView(id,{clearResult=false}={}){if(clearResult&&id==='home')clearPreviousResult();showView(id,{updateUrl:true});closeMenu()}
+$$('[data-view]').forEach(b=>b.onclick=()=>navigateToView(b.dataset.view,{clearResult:b.dataset.view==='home'}));
+addEventListener('popstate',()=>showView(viewFromPath()));
 $('#menuToggle').onclick=()=>{const open=$('header').classList.toggle('menu-open');$('#menuToggle').innerHTML=`<span aria-hidden="true">${open?'×':'☰'}</span>`;$('#menuToggle').setAttribute('aria-expanded',String(open));$('#menuToggle').setAttribute('aria-label',open?'Đóng mục lục':'Mở mục lục')};
 const prefs=load(KEYS.prefs,{}),requestedTheme=new URLSearchParams(location.search).get('theme');document.body.classList.toggle('light-theme',requestedTheme?requestedTheme==='light':!!prefs.light);document.body.classList.toggle('high-contrast',!!prefs.contrast);document.documentElement.classList.toggle('large-text',!!prefs.large);
 function syncDisplayControls(){

@@ -54,7 +54,7 @@ function navigateToView(id,{clearResult=false}={}){if(clearResult&&id==='home')c
 $$('[data-view]').forEach(b=>b.onclick=()=>navigateToView(b.dataset.view,{clearResult:b.dataset.view==='home'}));
 addEventListener('popstate',()=>showView(viewFromPath()));
 $('#menuToggle').onclick=()=>{const open=$('header').classList.toggle('menu-open');$('#menuToggle').innerHTML=`<span aria-hidden="true">${open?'×':'☰'}</span>`;$('#menuToggle').setAttribute('aria-expanded',String(open));$('#menuToggle').setAttribute('aria-label',open?'Đóng mục lục':'Mở mục lục')};
-const prefs=load(KEYS.prefs,{}),requestedTheme=new URLSearchParams(location.search).get('theme');document.body.classList.toggle('light-theme',requestedTheme?requestedTheme==='light':!!prefs.light);document.body.classList.toggle('high-contrast',!!prefs.contrast);document.documentElement.classList.toggle('large-text',!!prefs.large);
+const prefs=load(KEYS.prefs,{}),requestedTheme=new URLSearchParams(location.search).get('theme');document.body.classList.toggle('light-theme',requestedTheme==='light');document.body.classList.toggle('high-contrast',!!prefs.contrast);document.documentElement.classList.toggle('large-text',!!prefs.large);
 function syncDisplayControls(){
   const light=document.body.classList.contains('light-theme'),contrast=document.body.classList.contains('high-contrast'),large=document.documentElement.classList.contains('large-text'),themeColor=document.querySelector('meta[name="theme-color"]');
   $('#themeToggle').setAttribute('aria-pressed',String(light));$('#themeToggle').setAttribute('aria-label',light?'Dùng giao diện tối':'Dùng giao diện sáng');$('#themeToggle').setAttribute('title',light?'Dùng giao diện tối':'Dùng giao diện sáng');$('#themeToggle').innerHTML=`<span aria-hidden="true">${light?'☾':'☼'}</span>`;
@@ -62,7 +62,7 @@ function syncDisplayControls(){
   $('#fontSize').setAttribute('aria-pressed',String(large));$('#fontSize').setAttribute('aria-label',large?'Thu nhỏ chữ':'Phóng to chữ');$('#fontSize').setAttribute('title',large?'Thu nhỏ chữ':'Phóng to chữ');$('#fontSize').textContent=large?'A−':'A+';
   document.documentElement.style.colorScheme=contrast?'dark':light?'light':'dark';if(themeColor)themeColor.content=contrast?'#000000':light?'#f7f8ff':'#070b1d'
 }
-$('#themeToggle').onclick=()=>{document.body.classList.toggle('light-theme');save(KEYS.prefs,{...load(KEYS.prefs,{}),light:document.body.classList.contains('light-theme')});syncDisplayControls()};
+$('#themeToggle').onclick=()=>{document.body.classList.toggle('light-theme');syncDisplayControls()};
 $('#contrastToggle').onclick=()=>{document.body.classList.toggle('high-contrast');save(KEYS.prefs,{...load(KEYS.prefs,{}),contrast:document.body.classList.contains('high-contrast')});syncDisplayControls()};
 $('#fontSize').onclick=()=>{document.documentElement.classList.toggle('large-text');save(KEYS.prefs,{...load(KEYS.prefs,{}),large:document.documentElement.classList.contains('large-text')});syncDisplayControls()};
 syncDisplayControls();

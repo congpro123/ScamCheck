@@ -827,6 +827,13 @@ body.high-contrast [tabindex]:focus-visible,
 body.high-contrast a:focus-visible { outline-color: #fff200; }
 html.large-text { --base: 21px; }
 
+@media (min-width: 721px) {
+  html.large-text .sample-row { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; }
+  html.large-text .sample-row > span { grid-column: 1 / -1; margin-right: 0; }
+  html.large-text .sample-row .sample { min-height: 52px; white-space: normal; }
+  html.large-text .sample-row .sample:last-child { grid-column: 1 / -1; }
+}
+
 /* Tablet and mobile */
 @media (max-width: 920px) {
   header { gap: 14px; }

@@ -151,7 +151,7 @@ header::before {
 .brand-mark img { display: block; width: 100%; height: 100%; filter: drop-shadow(0 0 12px rgba(126, 110, 255, .24)); }
 .brand-copy { display: grid; line-height: 1.1; }
 .brand-copy strong { font-size: 1.02rem; font-weight: 800; letter-spacing: -.035em; }
-.brand-copy small { margin-top: 4px; color: var(--muted); font-size: 1rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.brand-copy small { margin-top: 3px; color: var(--muted); font-size: .58rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
 nav { display: flex; flex: 1; align-items: center; gap: 4px; }
 nav > button,
 .settings button {
@@ -578,7 +578,8 @@ footer {
   margin: 0 auto;
   padding: 28px 28px 36px;
   color: #77809e;
-  font-size: 1rem;
+  font-size: .82rem;
+  line-height: 1.55;
   text-align: center;
   border-top: 1px solid var(--line);
 }

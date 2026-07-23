@@ -2,7 +2,7 @@
 // Tiện ích truy vấn DOM ngắn gọn, chỉ dùng với selector nội bộ do ứng dụng kiểm soát.
 const $ = s => document.querySelector(s); const $$ = s => [...document.querySelectorAll(s)];
 // Mọi dữ liệu phiên được lưu cục bộ; LIMIT là trần gọi AI hiển thị cho người dùng.
-const KEYS={history:'scamcheck_history',cache:'scamcheck_cache',logs:'scamcheck_logs',prefs:'scamcheck_prefs'}; const LIMIT=6;
+const KEYS={history:'scamcheck_history',cache:'scamcheck_cache_context_v3',logs:'scamcheck_logs',prefs:'scamcheck_prefs'}; const LIMIT=6;
 // Ba tin mẫu giúp người dùng thử nhanh mà không phải tự nhập.
 const samples={prize:'CHÚC MỪNG! Bạn trúng iPhone 16. Chuyển 499.000đ phí nhận thưởng vào STK 0123456789 trong 30 phút.',bank:'Vietcombank: Tài khoản sắp bị khoá. Xác minh ngay tại https://vietcombank-xacminh.com và nhập OTP.',safe:'Mẹ ơi, chiều nay con về lúc 6 giờ. Mẹ có cần con mua thêm rau không?'};
 // Dữ liệu thư viện được giữ phía client để lọc/chuyển trang không cần tải lại.
@@ -28,14 +28,14 @@ const improvementTips=[
  'Chỉ cài ứng dụng từ kho chính thức; tuyệt đối không mở tệp APK được gửi qua tin nhắn.',
  'Hãy rà lại bốn dấu hiệu: đòi tiền, hỏi OTP hoặc mật khẩu, tạo áp lực và gửi liên kết lạ.'
 ];
-const state={uses:0,analysis:null,text:'',quiz:0,score:0,answered:false};
+const state={uses:0,analysis:null,text:'',quiz:0,score:0,answered:false,simulation:null};
 function load(k,f){try{return JSON.parse(localStorage.getItem(k))||f}catch{return f}} function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
 // Escape dữ liệu trước khi đưa vào HTML động để ngăn nội dung tin nhắn chèn mã HTML.
 function esc(v=''){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 // Hash chỉ dùng nhận diện tin trùng trong cache, không dùng cho mục đích bảo mật.
 function hash(s){let h=2166136261;for(const c of s.trim().toLowerCase())h=(h^c.charCodeAt(0))*16777619;return (h>>>0).toString(36)}
 // Điều hướng kiểu SPA: mỗi section có URL riêng và vẫn không phải tải lại toàn trang.
-const viewPaths={home:'/',library:'/library',training:'/training',history:'/history'};
+const viewPaths={home:'/',library:'/library',training:'/training',simulation:'/simulation',history:'/history'};
 const pathViews=Object.fromEntries(Object.entries(viewPaths).map(([view,path])=>[path,view]));
 function viewFromPath(){const path=location.pathname.replace(/\/+$/,'')||'/';return pathViews[path]||'home'}
 function showView(id,{updateUrl=false}={}){
@@ -45,6 +45,7 @@ function showView(id,{updateUrl=false}={}){
   if(id==='history')renderHistory();
   if(id==='library')renderLibrary('Tất cả');
   if(id==='training'&&!$('#quiz').hasChildNodes())renderQuiz();
+  if(id==='simulation'&&!$('#simulationStage').hasChildNodes())renderSimulationChooser();
   if(updateUrl&&location.pathname!==viewPaths[id])history.pushState({view:id},'',viewPaths[id]);
   scrollTo(0,0)
 }
@@ -143,6 +144,66 @@ scamDetail.addEventListener('click',event=>{
   if(event.clientX<left||event.clientX>right||event.clientY<top||event.clientY>bottom)scamDetail.close();
 });
 function renderQuiz(){if(state.quiz>=quizData.length){$('#quiz').innerHTML=`<h2>Hoàn thành: ${state.score}/10</h2><p>${state.score>=8?'Bác nhận diện rất tốt. Hãy tiếp tục giữ thói quen kiểm tra kênh chính thức.':'Bác nên xem lại Thư viện, nhất là các dấu hiệu tạo áp lực và đòi thông tin bí mật.'}</p><button id="restart" class="primary">Luyện lại</button>`;$('#restart').onclick=()=>{state.quiz=0;state.score=0;state.answered=false;renderQuiz()};return}const q=quizData[state.quiz];$('#quiz').innerHTML=`<p>Câu ${state.quiz+1} / 10 · Điểm ${state.score}</p><div class="quiz-message">${esc(q[0])}</div><div class="quiz-options"><button class="primary answer" data-a="scam">Lừa đảo</button><button class="secondary answer" data-a="safe">An toàn</button></div><div id="feedback" aria-live="polite"></div>`;$$('.answer').forEach(b=>b.onclick=()=>{if(state.answered)return;state.answered=true;const ok=b.dataset.a===q[1];if(ok)state.score++;$$('.answer').forEach(x=>x.disabled=true);const improvement=ok?'':`<div class="improvement-tip"><strong>Gợi ý cải thiện</strong><p>${esc(improvementTips[state.quiz])}</p></div>`;$('#feedback').innerHTML=`<div class="feedback ${ok?'correct':'incorrect'}"><strong>${ok?'Chính xác!':'Chưa đúng.'}</strong> ${esc(q[2])}</div>${improvement}<p><button id="next" class="primary">Câu tiếp theo</button></p>`;$('#next').onclick=()=>{state.quiz++;state.answered=false;renderQuiz()}})}
+// Mô phỏng phân nhánh chạy hoàn toàn cục bộ và dùng dữ liệu thuần có thể kiểm thử bằng Node.
+function renderSimulationChooser(){
+  const scenarios=window.ScamSimulation?.scenarios||{};
+  $('#simulationStage').innerHTML=`<div class="simulation-intro panel"><div><div class="panel-kicker"><span aria-hidden="true">✦</span> Phòng tập phản xạ</div><h2>Chọn một cuộc hội thoại</h2><p>Hãy trả lời như khi tình huống thật đang diễn ra. Sau mỗi quyết định, ScamCheck sẽ giải thích thủ thuật tâm lý vừa được sử dụng.</p></div><div class="simulation-note"><strong>An toàn tuyệt đối</strong><span>Không gọi API · Không lưu câu trả lời · Có thể chơi lại</span></div></div><div class="simulation-scenarios">${Object.entries(scenarios).map(([id,s])=>`<button class="simulation-card" data-simulation="${esc(id)}"><span class="simulation-card-top"><span class="simulation-avatar" aria-hidden="true">${esc(s.avatar)}</span><span><small>${esc(s.category)}</small><strong>${esc(s.title)}</strong></span></span><span class="simulation-card-copy">${esc(s.description)}</span><span class="simulation-card-meta"><span>${esc(s.difficulty)}</span><span>${esc(s.duration)}</span><b>Chơi ngay →</b></span></button>`).join('')}</div>`;
+  $$('[data-simulation]').forEach(button=>button.onclick=()=>startSimulation(button.dataset.simulation));
+}
+function startSimulation(scenarioId){
+  const scenario=window.ScamSimulation?.scenarios?.[scenarioId];
+  if(!scenario)return;
+  const node=scenario.nodes[scenario.start];
+  state.simulation={scenarioId,nodeId:scenario.start,score:50,step:1,transcript:[{who:'scammer',text:node.message}],signals:[...node.signals],feedback:null,pending:null,ending:null};
+  renderSimulation();
+}
+function renderSimulation(){
+  const game=state.simulation,api=window.ScamSimulation;
+  if(!game||!api)return renderSimulationChooser();
+  const scenario=api.scenarios[game.scenarioId];
+  if(game.ending)return renderSimulationEnding(scenario,game,api);
+  const node=scenario.nodes[game.nodeId],label=api.shieldLabel(game.score);
+  $('#simulationStage').innerHTML=`<div class="simulation-toolbar"><button id="leaveSimulation" class="secondary">← Đổi kịch bản</button><div><span>Quyết định ${game.step}</span><strong>${esc(scenario.title)}</strong></div></div><div class="simulation-layout"><article class="simulation-phone" aria-label="Cuộc hội thoại mô phỏng"><header class="simulation-phone-head"><span class="simulation-avatar" aria-hidden="true">${esc(scenario.avatar)}</span><span><strong>${esc(scenario.sender)}</strong><small>Đang trò chuyện · mô phỏng</small></span></header><div id="simulationLog" class="simulation-log" role="log" aria-live="polite" aria-relevant="additions">${game.transcript.map(item=>`<div class="simulation-bubble ${item.who==='user'?'user':'scammer'}"><span>${item.who==='user'?'Bác':'Người gửi'}</span>${esc(item.text)}</div>`).join('')}</div><div class="simulation-signals"><span>Dấu hiệu đã lộ:</span>${game.signals.map(signal=>`<b>${esc(signal)}</b>`).join('')}</div></article><aside class="simulation-decision panel"><div class="shield-row"><div><small>Khiên an toàn</small><strong>${esc(label)}</strong></div><b>${game.score}/100</b></div><div class="shield-track" role="progressbar" aria-label="Điểm Khiên an toàn" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${game.score}"><span style="width:${game.score}%"></span></div>${game.feedback?renderSimulationFeedback(game):`<div class="decision-prompt"><span>Bác sẽ làm gì?</span><p>Chọn một cách phản hồi để tiếp tục câu chuyện.</p></div><div class="simulation-choices">${node.choices.map((choice,index)=>`<button data-sim-choice="${index}"><span>${index+1}</span>${esc(choice.text)}</button>`).join('')}</div>`}</aside></div>`;
+  $('#leaveSimulation').onclick=()=>{state.simulation=null;renderSimulationChooser()};
+  $$('[data-sim-choice]').forEach(button=>button.onclick=()=>chooseSimulation(Number(button.dataset.simChoice)));
+  $('#continueSimulation')?.addEventListener('click',continueSimulation);
+  requestAnimationFrame(()=>{const log=$('#simulationLog');if(log)log.scrollTop=log.scrollHeight});
+}
+function renderSimulationFeedback(game){
+  const delta=game.feedback.delta,tone=delta>5?'good':delta<0?'bad':'neutral',change=delta>0?`+${delta}`:`${delta}`;
+  return `<div class="simulation-feedback ${tone}" aria-live="polite"><span>${delta===0?'Không đổi':`${change} điểm Khiên`}</span><strong>${delta>5?'Phản xạ tốt':delta<0?'Cẩn thận — đang vào bẫy':'Chưa đủ để xác minh'}</strong><p>${esc(game.feedback.text)}</p></div><button id="continueSimulation" class="primary">${game.pending.ending?'Xem kết quả':'Xem tin nhắn tiếp theo'} <span aria-hidden="true">→</span></button>`;
+}
+function chooseSimulation(choiceIndex){
+  const game=state.simulation,api=window.ScamSimulation;
+  if(!game||game.feedback)return;
+  const result=api.resolveChoice(game.scenarioId,game.nodeId,choiceIndex,game.score);
+  game.score=result.score;
+  game.transcript.push({who:'user',text:result.choice.reply});
+  game.feedback={text:result.choice.feedback,delta:result.choice.delta};
+  game.pending={next:result.next,ending:result.endingId};
+  renderSimulation();
+}
+function continueSimulation(){
+  const game=state.simulation,api=window.ScamSimulation;
+  if(!game?.pending)return;
+  if(game.pending.ending){
+    game.ending=api.endings[game.pending.ending];
+    game.endingId=game.pending.ending;
+    game.feedback=null;game.pending=null;
+    return renderSimulation();
+  }
+  const scenario=api.scenarios[game.scenarioId],next=scenario.nodes[game.pending.next];
+  game.nodeId=game.pending.next;game.step++;game.transcript.push({who:'scammer',text:next.message});
+  game.signals=[...new Set([...game.signals,...next.signals])];
+  game.feedback=null;game.pending=null;
+  renderSimulation();
+}
+function renderSimulationEnding(scenario,game,api){
+  const ending=game.ending,label=api.shieldLabel(game.score);
+  $('#simulationStage').innerHTML=`<article class="simulation-ending ${esc(ending.tone)}"><div class="ending-icon" aria-hidden="true">${ending.tone==='safe'?'✓':ending.tone==='suspect'?'!':'×'}</div><p class="eyebrow">Kết thúc kịch bản · ${esc(scenario.category)}</p><h2>${esc(ending.title)}</h2><p>${esc(ending.body)}</p><div class="ending-score"><span>Khiên an toàn cuối cùng</span><strong>${game.score}/100 · ${esc(label)}</strong></div>${game.endingId==='danger'?'<div class="ending-alert"><strong>Nếu đây là tình huống thật:</strong> Dừng liên lạc, gọi ngân hàng qua số chính thức và lưu lại bằng chứng ngay.</div>':''}<div class="ending-lessons"><h3>Ba điều cần nhớ</h3><ol>${scenario.lessons.map(lesson=>`<li>${esc(lesson)}</li>`).join('')}</ol></div><div class="ending-actions"><button id="replaySimulation" class="primary">Chơi lại kịch bản</button><button id="chooseSimulation" class="secondary">Chọn kịch bản khác</button></div></article>`;
+  $('#replaySimulation').onclick=()=>startSimulation(game.scenarioId);
+  $('#chooseSimulation').onclick=()=>{state.simulation=null;renderSimulationChooser()};
+}
 // Ưu tiên Web Speech API; nếu Safari không hỗ trợ thì hướng dẫn dùng micro bàn phím hệ điều hành.
 const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;if(SpeechRecognition){const rec=new SpeechRecognition();rec.lang='vi-VN';rec.continuous=true;rec.onresult=e=>{$('#message').value=[...e.results].map(x=>x[0].transcript).join(' ');$('#message').dispatchEvent(new Event('input'))};rec.onend=()=>{$('#speak').textContent='Đọc bằng giọng nói';$('#speak').setAttribute('aria-pressed','false')};$('#speak').onclick=()=>{if($('#speak').getAttribute('aria-pressed')==='true'){rec.stop()}else{try{rec.start();$('#speak').textContent='Dừng ghi âm';$('#speak').setAttribute('aria-pressed','true')}catch{}}}}else{$('#speak').onclick=()=>friendlyError('Trình duyệt này chưa hỗ trợ nhập giọng nói. Bác có thể dùng nút micro trên bàn phím.')}
 renderLibrary('Tất cả');renderQuiz();showView(viewFromPath());

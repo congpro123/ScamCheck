@@ -17,7 +17,7 @@ Không đưa `.env` lên Git. Nếu không có khoá, ứng dụng chủ động
 - Cô tâm lý: chỉ chạy với tin Nghi ngờ/Nguy hiểm, lỗi độc lập, 2–3 câu đúng vai.
 - Người ứng cứu: bốn tình huống, số tổng đài allowlist, chặn số AI tự sinh.
 - Giới hạn 6 lượt AI/phiên, timeout 18 giây, retry 429 tối đa hai lần, cache 30 tin, lịch sử 10 tin, nhật ký phiên.
-- Nhập giọng nói, thư viện 12 thủ đoạn, bài luyện 10 câu, tô trích dẫn, tương phản cao, phóng chữ, ảnh chia sẻ PNG.
+- Nhập giọng nói, thư viện 12 thủ đoạn, bài luyện 10 câu, mô phỏng phân nhánh 3 kịch bản, tô trích dẫn, tương phản cao, phóng chữ, ảnh chia sẻ PNG.
 - 60 mẫu đánh giá cân bằng, trong đó 15 mẫu khó; kiểm thử parser, prompt injection, tên miền và bốn luồng khủng hoảng.
 
 ## Triển khai

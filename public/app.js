@@ -2,7 +2,7 @@
 // Tiện ích truy vấn DOM ngắn gọn, chỉ dùng với selector nội bộ do ứng dụng kiểm soát.
 const $ = s => document.querySelector(s); const $$ = s => [...document.querySelectorAll(s)];
 // Mọi dữ liệu phiên được lưu cục bộ; LIMIT là trần gọi AI hiển thị cho người dùng.
-const KEYS={history:'scamcheck_history',cache:'scamcheck_cache_context_v3',logs:'scamcheck_logs',prefs:'scamcheck_prefs'}; const LIMIT=6;
+const KEYS={history:'scamcheck_history',cache:'scamcheck_cache_context_v3',logs:'scamcheck_logs',prefs:'scamcheck_prefs',training:'scamcheck_training_v1'}; const LIMIT=6;
 // Ba tin mẫu giúp người dùng thử nhanh mà không phải tự nhập.
 const samples={prize:'CHÚC MỪNG! Bạn trúng iPhone 16. Chuyển 499.000đ phí nhận thưởng vào STK 0123456789 trong 30 phút.',bank:'Vietcombank: Tài khoản sắp bị khoá. Xác minh ngay tại https://vietcombank-xacminh.com và nhập OTP.',safe:'Mẹ ơi, chiều nay con về lúc 6 giờ. Mẹ có cần con mua thêm rau không?'};
 // Dữ liệu thư viện được giữ phía client để lọc/chuyển trang không cần tải lại.
@@ -16,6 +16,19 @@ const scams=[
 const quizData=[
  ['Ngân hàng: OTP 482911 của quý khách, tuyệt đối không cung cấp cho bất kỳ ai.','safe','Đây là cảnh báo bảo mật, không yêu cầu gửi OTP.'],['Công an yêu cầu bác chuyển 20 triệu vào tài khoản an toàn để xác minh.','scam','Cơ quan công an không yêu cầu chuyển tiền để điều tra.'],['Bưu tá gọi báo đơn hàng 120.000đ bác đã đặt và cho phép kiểm tra hàng trước.','safe','Không có yêu cầu bất thường; vẫn nên đối chiếu đơn đã đặt.'],['Tài khoản sắp khoá, đăng nhập vietcornbank.com ngay.','scam','Tên miền dùng “rn” giả chữ “m” và tạo áp lực.'],['Con đổi số mới, mẹ chuyển tiền học phí ngay giúp con.','scam','Mạo danh người thân và thúc chuyển tiền; cần gọi số cũ xác minh.'],['Lịch khám của bác lúc 9:00 ngày mai tại phòng khám quen.','safe','Đây là thông báo lịch hẹn, không đòi dữ liệu hay tiền.'],['Chúc mừng trúng xe máy, đóng 2 triệu phí hồ sơ để nhận.','scam','Giải thưởng bất ngờ kèm phí trả trước là dấu hiệu điển hình.'],['Mã giao dịch của quý khách thành công. Nếu không phải bạn, gọi số sau thẻ.','safe','Khuyến nghị dùng số chính thức trên thẻ, không đưa liên kết lạ.'],['Cài file VNeID.apk này để cán bộ hỗ trợ đồng bộ.','scam','Không cài APK được gửi qua chat; có nguy cơ chiếm thiết bị.'],['Bạn Lan gửi ảnh họp lớp và hỏi bác có tham dự không.','safe','Trao đổi cá nhân bình thường, không có yêu cầu nhạy cảm.']
 ];
+// Thông tin ngữ cảnh biến mỗi câu hỏi thành một bài quan sát ngắn, gần với tình huống thật.
+const quizMeta=[
+ {sender:'Ngân hàng của bác',detail:'Brandname NGANHANG',channel:'Tin nhắn SMS',time:'Hôm nay · 08:42',focus:'Giữ kín mã OTP',hint:'Tin này chỉ nhắc bác giữ kín, hay đang xin bác gửi mã OTP?',lessonTitle:'OTP chỉ để bác tự dùng',clues:['Chỉ nhắc không chia sẻ OTP','Không có đường dẫn hoặc yêu cầu trả lời','Người gửi không hỏi thông tin bí mật'],safeAction:'Không gửi OTP cho bất kỳ ai. Nếu bác không thực hiện giao dịch, hãy tự mở ứng dụng ngân hàng để kiểm tra.'},
+ {sender:'Người tự xưng công an',detail:'Số lạ · 09•• ••• 318',channel:'Cuộc gọi đã chép lại',time:'Hôm nay · 09:15',focus:'Yêu cầu chuyển tiền',hint:'Công an có yêu cầu bác chuyển tiền để chứng minh trong sạch không?',lessonTitle:'Không có “tài khoản an toàn” để điều tra',clues:['Tự xưng công an qua số lạ','Yêu cầu chuyển ngay 20 triệu đồng','Dùng cụm từ “tài khoản an toàn”'],safeAction:'Cúp máy, không chuyển tiền và tự gọi cơ quan công an qua số chính thức nếu cần xác minh.'},
+ {sender:'Bưu tá giao hàng',detail:'Đơn dự kiến · 120.000đ',channel:'Cuộc gọi giao hàng',time:'Hôm nay · 10:06',focus:'Kiểm tra đơn đã đặt',hint:'Bác có đặt đúng món và đúng số tiền 120.000đ này không?',lessonTitle:'Đơn hàng thật vẫn cần đối chiếu',clues:['Cho phép kiểm tra hàng trước','Không xin OTP hoặc mật khẩu','Số tiền cần khớp với đơn đã đặt'],safeAction:'Đối chiếu tên món, số tiền và người bán trước khi nhận. Không cung cấp OTP cho bưu tá.'},
+ {sender:'VCB-HOTRO',detail:'Tin nhắn từ số lạ',channel:'Tin nhắn kèm tên miền',time:'Hôm nay · 11:24',focus:'Tên miền giả',hint:'Nhìn kỹ “vietcornbank”: chữ “r” và “n” có đang giả chữ “m” không?',lessonTitle:'Đọc tên miền từng chữ',clues:['Tên miền “vietcornbank” giả chữ “m” bằng “rn”','Dọa tài khoản sắp bị khóa','Thúc bấm vào trang đăng nhập lạ'],safeAction:'Không mở trang trong tin nhắn. Hãy tự mở ứng dụng ngân hàng hoặc gọi số in trên thẻ.'},
+ {sender:'Người tự xưng là con',detail:'Số mới · 08•• ••• 527',channel:'Tin nhắn cá nhân',time:'Hôm nay · 13:02',focus:'Mạo danh người thân',hint:'Bác có thể gọi lại số cũ hoặc hỏi điều chỉ người nhà biết không?',lessonTitle:'Số mới phải xác minh lại',clues:['Đột ngột báo đổi số điện thoại','Thúc chuyển học phí ngay','Chưa có cách nào chứng minh đúng là người thân'],safeAction:'Gọi lại số cũ hoặc gọi video. Chỉ chuyển tiền sau khi đã nghe đúng giọng và xác minh rõ.'},
+ {sender:'Phòng khám quen',detail:'Tổng đài đã lưu trong danh bạ',channel:'Tin nhắn nhắc lịch',time:'Hôm nay · 14:10',focus:'Thông báo bình thường',hint:'Tin có đòi tiền, mật khẩu hoặc yêu cầu bấm đường dẫn lạ không?',lessonTitle:'Kiểm tra điều tin nhắn yêu cầu',clues:['Lịch hẹn khớp nơi bác thường khám','Không đòi tiền hoặc thông tin bí mật','Không có đường dẫn hay tệp cài đặt'],safeAction:'Đối chiếu lịch đã đặt. Nếu thông tin không khớp, gọi số phòng khám bác đã lưu để hỏi lại.'},
+ {sender:'KHO-QUA-TANG',detail:'Số quảng cáo chưa xác minh',channel:'Tin nhắn quảng cáo',time:'Hôm nay · 15:36',focus:'Phí nhận thưởng',hint:'Bác có tham gia quay thưởng không, và vì sao phải trả tiền trước?',lessonTitle:'Không đóng phí để nhận quà bất ngờ',clues:['Báo trúng dù bác không tham gia','Đòi đóng 2 triệu đồng trước','Dùng phần thưởng lớn để làm bác mất cảnh giác'],safeAction:'Không trả bất kỳ khoản phí nào. Chặn người gửi và báo tin nhắn rác hoặc lừa đảo.'},
+ {sender:'Ngân hàng của bác',detail:'Brandname NGANHANG',channel:'Tin nhắn giao dịch',time:'Hôm nay · 16:18',focus:'Kênh liên hệ chính thức',hint:'Tin đưa đường dẫn lạ, hay chỉ nhắc bác gọi số in trên thẻ?',lessonTitle:'Tự gọi số chính thức khi nghi ngờ',clues:['Không đưa đường dẫn đăng nhập','Hướng dẫn dùng số ở mặt sau thẻ','Không xin OTP, mật khẩu hoặc chuyển tiền'],safeAction:'Nếu giao dịch không phải của bác, tự gọi số trên thẻ hoặc trong ứng dụng chính thức để khóa giao dịch.'},
+ {sender:'Người tự xưng cán bộ',detail:'Tài khoản Zalo chưa xác minh',channel:'Tin nhắn kèm tệp',time:'Hôm nay · 17:05',focus:'Tệp cài đặt lạ',hint:'VNeID chính thức phải tải từ kho ứng dụng hay từ tệp gửi qua chat?',lessonTitle:'Không cài tệp APK được gửi qua chat',clues:['Gửi tệp “VNeID.apk” qua trò chuyện','Tự xưng cán bộ nhưng tài khoản chưa xác minh','Đòi cài ứng dụng ngoài kho chính thức'],safeAction:'Không mở tệp. Xóa tệp và chỉ tải VNeID từ App Store hoặc Google Play chính thức.'},
+ {sender:'Bạn Lan',detail:'Liên hệ đã lưu trong danh bạ',channel:'Tin nhắn cá nhân',time:'Hôm nay · 18:20',focus:'Trò chuyện bình thường',hint:'Tin có xin tiền, OTP, mật khẩu hoặc gửi đường dẫn lạ không?',lessonTitle:'Không phải tin nhắn nào cũng là lừa đảo',clues:['Nội dung phù hợp cuộc họp lớp','Không xin tiền hay thông tin bí mật','Không thúc ép hoặc đe dọa hậu quả'],safeAction:'Bác có thể trả lời bình thường. Nếu sau đó xuất hiện yêu cầu tiền hoặc đường dẫn lạ, hãy xác minh lại.'}
+];
 const improvementTips=[
  'Lần sau, hãy phân biệt tin nhắn chỉ cảnh báo bảo mật với tin nhắn yêu cầu cung cấp mã OTP.',
  'Gặp yêu cầu chuyển tiền để xác minh hoặc điều tra, hãy dừng lại và tự gọi cơ quan qua số chính thức.',
@@ -28,7 +41,11 @@ const improvementTips=[
  'Chỉ cài ứng dụng từ kho chính thức; tuyệt đối không mở tệp APK được gửi qua tin nhắn.',
  'Hãy rà lại bốn dấu hiệu: đòi tiền, hỏi OTP hoặc mật khẩu, tạo áp lực và gửi liên kết lạ.'
 ];
-const state={uses:0,analysis:null,text:'',quiz:0,score:0,answered:false,simulation:null};
+const savedTraining=load(KEYS.training,{});
+const savedQuizAnswers=Array.isArray(savedTraining.answers)&&savedTraining.answers.length===quizData.length?savedTraining.answers.map(answer=>answer==='safe'||answer==='scam'?answer:null):Array(quizData.length).fill(null);
+let savedQuiz=Number.isInteger(savedTraining.quiz)&&savedTraining.quiz>=0&&savedTraining.quiz<=quizData.length?savedTraining.quiz:0;
+if(savedQuiz===quizData.length&&savedQuizAnswers.some(answer=>answer===null))savedQuiz=savedQuizAnswers.findIndex(answer=>answer===null);
+const state={uses:0,analysis:null,text:'',quiz:savedQuiz,score:0,answered:savedQuiz<quizData.length&&savedQuizAnswers[savedQuiz]!==null,quizHint:false,quizChoice:savedQuiz<quizData.length?savedQuizAnswers[savedQuiz]:null,quizAnswers:savedQuizAnswers,simulation:null};
 function load(k,f){try{return JSON.parse(localStorage.getItem(k))||f}catch{return f}} function save(k,v){localStorage.setItem(k,JSON.stringify(v))}
 // Escape dữ liệu trước khi đưa vào HTML động để ngăn nội dung tin nhắn chèn mã HTML.
 function esc(v=''){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -143,7 +160,183 @@ scamDetail.addEventListener('click',event=>{
   const {left,right,top,bottom}=scamDetail.getBoundingClientRect();
   if(event.clientX<left||event.clientX>right||event.clientY<top||event.clientY>bottom)scamDetail.close();
 });
-function renderQuiz(){if(state.quiz>=quizData.length){$('#quiz').innerHTML=`<h2>Hoàn thành: ${state.score}/10</h2><p>${state.score>=8?'Bác nhận diện rất tốt. Hãy tiếp tục giữ thói quen kiểm tra kênh chính thức.':'Bác nên xem lại Thư viện, nhất là các dấu hiệu tạo áp lực và đòi thông tin bí mật.'}</p><button id="restart" class="primary">Luyện lại</button>`;$('#restart').onclick=()=>{state.quiz=0;state.score=0;state.answered=false;renderQuiz()};return}const q=quizData[state.quiz];$('#quiz').innerHTML=`<p>Câu ${state.quiz+1} / 10 · Điểm ${state.score}</p><div class="quiz-message">${esc(q[0])}</div><div class="quiz-options"><button class="primary answer" data-a="scam">Lừa đảo</button><button class="secondary answer" data-a="safe">An toàn</button></div><div id="feedback" aria-live="polite"></div>`;$$('.answer').forEach(b=>b.onclick=()=>{if(state.answered)return;state.answered=true;const ok=b.dataset.a===q[1];if(ok)state.score++;$$('.answer').forEach(x=>x.disabled=true);const improvement=ok?'':`<div class="improvement-tip"><strong>Gợi ý cải thiện</strong><p>${esc(improvementTips[state.quiz])}</p></div>`;$('#feedback').innerHTML=`<div class="feedback ${ok?'correct':'incorrect'}"><strong>${ok?'Chính xác!':'Chưa đúng.'}</strong> ${esc(q[2])}</div>${improvement}<p><button id="next" class="primary">Câu tiếp theo</button></p>`;$('#next').onclick=()=>{state.quiz++;state.answered=false;renderQuiz()}})}
+function quizScore(){return state.quizAnswers.reduce((score,answer,index)=>score+(answer===quizData[index][1]?1:0),0)}
+function saveQuizProgress(){save(KEYS.training,{quiz:state.quiz,answers:state.quizAnswers})}
+function openQuizLesson(index,{focus=true}={}){
+  if(index<0||index>=quizData.length)return;
+  const savedAnswer=state.quizAnswers[index];
+  state.quiz=index;
+  state.quizChoice=savedAnswer;
+  state.answered=savedAnswer!==null;
+  state.quizHint=false;
+  saveQuizProgress();
+  renderQuiz();
+  if(focus)requestAnimationFrame(()=>$('#trainingLessonStart')?.focus());
+}
+function renderQuizOutline(){
+  return `<ol class="training-lesson-list">${quizMeta.map((lesson,index)=>{
+    const completed=state.quizAnswers[index]!==null,current=index===state.quiz;
+    const status=current?'Đang học':completed?'Đã học':'Sắp tới';
+    const content=`<span class="training-step-number" aria-hidden="true">${completed?'✓':index+1}</span><span class="training-step-copy"><strong>${esc(lesson.lessonTitle)}</strong><small>${status}</small></span>`;
+    return `<li class="${current?'current ':''}${completed?'completed':''}">${completed||current?`<button type="button" data-quiz-lesson="${index}" ${current?'aria-current="step"':''}>${content}</button>`:`<div>${content}</div>`}</li>`;
+  }).join('')}</ol>`;
+}
+function renderQuiz(){
+  const root=$('#quiz'),total=quizData.length;
+  state.score=quizScore();
+  if(state.quiz>=total){
+    const scoreMessage=state.score>=8?'Bác đã có phản xạ kiểm tra rất tốt. Hãy tiếp tục giữ thói quen xác minh qua kênh chính thức.':state.score>=6?'Bác đã nắm được nhiều dấu hiệu quan trọng. Luyện lại một lượt sẽ giúp phản xạ chắc hơn.':'Mỗi lần luyện là một lần an toàn hơn. Bác hãy xem lại các quy tắc dưới đây rồi thử lại nhé.';
+    root.innerHTML=`<section class="training-complete panel" tabindex="-1">
+      <div class="training-complete-mark" aria-hidden="true">✓</div>
+      <p class="panel-kicker"><span aria-hidden="true">✦</span> Hoàn thành 10 bài học</p>
+      <h2>Bác đã hoàn thành khóa luyện tập</h2>
+      <p>${esc(scoreMessage)}</p>
+      <div class="training-score-summary"><strong>${state.score}/${total}</strong><span>tình huống nhận diện đúng</span></div>
+      <div class="training-rule-grid" aria-label="Bốn quy tắc an toàn cần nhớ">
+        <article><span aria-hidden="true">01</span><strong>Không đưa OTP</strong><p>Mã OTP, mật khẩu và mã PIN chỉ để bác tự dùng.</p></article>
+        <article><span aria-hidden="true">02</span><strong>Không chuyển tiền để xác minh</strong><p>Cơ quan thật không có “tài khoản an toàn” để điều tra.</p></article>
+        <article><span aria-hidden="true">03</span><strong>Không bấm vội</strong><p>Tự mở ứng dụng hoặc gõ địa chỉ chính thức thay vì bấm liên kết lạ.</p></article>
+        <article><span aria-hidden="true">04</span><strong>Gọi lại để kiểm tra</strong><p>Dùng số bác đã lưu, số trên thẻ hoặc trang chính thức.</p></article>
+      </div>
+      <div class="training-complete-actions">
+        <button id="restartTraining" class="primary">↻ Luyện lại từ đầu</button>
+        <button id="startSimulationFromTraining" class="secondary">Thử hội thoại mô phỏng →</button>
+      </div>
+    </section>`;
+    $('#restartTraining').onclick=()=>{
+      state.quizAnswers.fill(null);
+      state.score=0;
+      openQuizLesson(0);
+    };
+    $('#startSimulationFromTraining').onclick=()=>navigateToView('simulation');
+    requestAnimationFrame(()=>$('.training-complete')?.focus());
+    return;
+  }
+
+  const q=quizData[state.quiz],meta=quizMeta[state.quiz];
+  const completedCount=state.quizAnswers.filter(answer=>answer!==null).length;
+  const progress=Math.round(completedCount/total*100);
+  const selected=state.quizChoice,answered=state.answered;
+  const correct=answered&&selected===q[1];
+  const answerClass=value=>{
+    if(!answered)return'';
+    if(selected===value)return value===q[1]?'is-correct':'is-incorrect';
+    return value===q[1]?'is-correct-reveal':'';
+  };
+  const answerStatus=value=>{
+    if(!answered)return'';
+    if(selected===value)return`<span class="training-answer-status">${value===q[1]?'✓ Lựa chọn an toàn':'× Bác đã chọn'}</span>`;
+    return value===q[1]?'<span class="training-answer-status">✓ Đáp án nên chọn</span>':'';
+  };
+  const feedback=answered?`<article id="quizFeedback" class="training-feedback feedback ${correct?'correct':'incorrect'}" tabindex="-1" aria-live="polite">
+      <div class="training-feedback-head">
+        <span class="training-feedback-icon" aria-hidden="true">${correct?'✓':'i'}</span>
+        <div><small>${correct?'Lựa chọn an toàn':'Mình cùng xem lại'}</small><h3>${esc(meta.lessonTitle)}</h3></div>
+      </div>
+      <p>${esc(q[2])}</p>
+      <div class="training-learn-grid">
+        <section>
+          <h4>Dấu hiệu cần nhìn</h4>
+          <ul>${meta.clues.map(clue=>`<li>${esc(clue)}</li>`).join('')}</ul>
+        </section>
+        <section class="training-safe-action">
+          <h4>Nếu gặp thật, bác nên…</h4>
+          <p>${esc(meta.safeAction)}</p>
+        </section>
+      </div>
+      <div class="training-memory-tip"><strong>Mẹo ghi nhớ</strong><p>${esc(improvementTips[state.quiz])}</p></div>
+    </article>
+    <div class="training-next-row"><span>Không cần ghi nhớ hết ngay. Quan trọng nhất là biết dừng lại để kiểm tra.</span><button id="nextQuiz" class="primary">${state.quiz===total-1?'Xem kết quả':'Bài tiếp theo'} <span aria-hidden="true">→</span></button></div>`:'';
+
+  root.innerHTML=`<section class="training-coursebar panel" aria-label="Tiến độ khóa học">
+      <div><span>Khóa học nhận diện lừa đảo</span><strong>${completedCount}/${total} bài đã học</strong></div>
+      <div class="training-progress" role="progressbar" aria-label="Tiến độ luyện tập" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress}"><span style="width:${progress}%"></span></div>
+      <b>${progress}%</b>
+    </section>
+    <div class="training-layout">
+      <article class="training-lesson panel">
+        <div class="training-lesson-head">
+          <div><span class="training-count">Bài ${state.quiz+1} / ${total}</span></div>
+          <span class="training-no-pressure">Không tính giờ · Có thể xem gợi ý</span>
+        </div>
+        <div id="trainingLessonStart" class="training-scenario-label" tabindex="-1"><span aria-hidden="true">◈</span> Tình huống vừa nhận được</div>
+        <article class="training-message-card" aria-label="Nội dung tình huống">
+          <div class="training-message-head">
+            <span class="training-sender-avatar" aria-hidden="true">${esc(meta.sender.slice(0,1))}</span>
+            <span class="training-sender-copy"><strong>${esc(meta.sender)}</strong><small>${esc(meta.detail)}</small></span>
+            <time>${esc(meta.time)}</time>
+          </div>
+          <blockquote class="quiz-message"><p>${esc(q[0])}</p></blockquote>
+        </article>
+        <section class="training-question">
+          <div>
+            <p class="training-question-kicker">Quan sát kỹ rồi chọn</p>
+            <h2 id="trainingQuestion" tabindex="-1">Theo bác, tình huống này thế nào?</h2>
+          </div>
+          <button id="quizHintButton" class="training-hint-button" type="button" aria-expanded="${state.quizHint}" aria-controls="trainingHint"><span aria-hidden="true">◎</span> ${state.quizHint?'Ẩn gợi ý':'Xem gợi ý'}</button>
+        </section>
+        <div id="trainingHint" class="training-hint" tabindex="-1" ${state.quizHint?'':'hidden'}><strong>Gợi ý quan sát</strong><p>${esc(meta.hint)}</p></div>
+        <div class="quiz-options" role="group" aria-labelledby="trainingQuestion">
+          <button class="training-answer scam-answer answer ${answerClass('scam')}" data-quiz-answer="scam" ${answered?'disabled':''}>
+            <span class="training-answer-icon" aria-hidden="true">!</span>
+            <span><strong>Có dấu hiệu lừa đảo</strong><small>Dừng lại và kiểm tra trước khi làm theo</small></span>
+            ${answerStatus('scam')}
+          </button>
+          <button class="training-answer safe-answer answer ${answerClass('safe')}" data-quiz-answer="safe" ${answered?'disabled':''}>
+            <span class="training-answer-icon" aria-hidden="true">✓</span>
+            <span><strong>Có vẻ an toàn</strong><small>Không thấy yêu cầu nguy hiểm rõ ràng</small></span>
+            ${answerStatus('safe')}
+          </button>
+        </div>
+        <div id="feedback">${feedback}</div>
+      </article>
+      <aside class="training-rail" aria-label="Nội dung khóa học">
+        <section class="training-outline panel">
+          <div class="training-rail-heading"><span>Tiến trình học</span><strong>${completedCount} / ${total}</strong></div>
+          ${renderQuizOutline()}
+        </section>
+        <section class="training-checklist panel">
+          <p class="panel-kicker"><span aria-hidden="true">✦</span> Kiểm tra nhanh</p>
+          <h3>4 câu hỏi trước khi tin</h3>
+          <ul>
+            <li><span aria-hidden="true">1</span>Có xin tiền hoặc chuyển khoản?</li>
+            <li><span aria-hidden="true">2</span>Có hỏi OTP hoặc mật khẩu?</li>
+            <li><span aria-hidden="true">3</span>Có thúc ép hoặc dọa hậu quả?</li>
+            <li><span aria-hidden="true">4</span>Có đường dẫn, tệp hay số lạ?</li>
+          </ul>
+          <p class="training-checklist-note"><strong>Chỉ cần một câu “Có”:</strong> hãy dừng lại và xác minh.</p>
+        </section>
+      </aside>
+    </div>`;
+
+  $('#quizHintButton').onclick=()=>{
+    state.quizHint=!state.quizHint;
+    renderQuiz();
+    requestAnimationFrame(()=>state.quizHint?$('#trainingHint')?.focus():$('#quizHintButton')?.focus());
+  };
+  root.querySelectorAll('[data-quiz-answer]').forEach(button=>button.onclick=()=>{
+    if(state.quizAnswers[state.quiz]!==null)return;
+    state.quizChoice=button.dataset.quizAnswer;
+    state.quizAnswers[state.quiz]=state.quizChoice;
+    state.answered=true;
+    state.score=quizScore();
+    saveQuizProgress();
+    renderQuiz();
+    requestAnimationFrame(()=>$('#quizFeedback')?.focus());
+  });
+  root.querySelectorAll('[data-quiz-lesson]').forEach(button=>button.onclick=()=>openQuizLesson(Number(button.dataset.quizLesson)));
+  $('#nextQuiz')?.addEventListener('click',()=>{
+    if(state.quiz<total-1)openQuizLesson(state.quiz+1);
+    else{
+      state.quiz=total;
+      state.quizChoice=null;
+      state.answered=false;
+      state.quizHint=false;
+      saveQuizProgress();
+      renderQuiz();
+    }
+  });
+}
 // Mô phỏng phân nhánh chạy hoàn toàn cục bộ và dùng dữ liệu thuần có thể kiểm thử bằng Node.
 function renderSimulationChooser(){
   const scenarios=window.ScamSimulation?.scenarios||{};

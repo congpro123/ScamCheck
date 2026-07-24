@@ -2,7 +2,7 @@
 // Tiện ích truy vấn DOM ngắn gọn, chỉ dùng với selector nội bộ do ứng dụng kiểm soát.
 const $ = s => document.querySelector(s); const $$ = s => [...document.querySelectorAll(s)];
 // Mọi dữ liệu phiên được lưu cục bộ; LIMIT là trần gọi AI hiển thị cho người dùng.
-const KEYS={history:'scamcheck_history',cache:'scamcheck_cache_context_v3',logs:'scamcheck_logs',prefs:'scamcheck_prefs',training:'scamcheck_training_v1'}; const LIMIT=67;
+const KEYS={history:'scamcheck_history',cache:'scamcheck_cache_context_v3',logs:'scamcheck_logs',prefs:'scamcheck_prefs',training:'scamcheck_training_v1'}; const LIMIT=6;
 // Ba tin mẫu giúp người dùng thử nhanh mà không phải tự nhập.
 const samples={prize:'CHÚC MỪNG! Bạn trúng iPhone 16. Chuyển 499.000đ phí nhận thưởng vào STK 0123456789 trong 30 phút.',bank:'Vietcombank: Tài khoản sắp bị khoá. Xác minh ngay tại https://vietcombank-xacminh.com và nhập OTP.',safe:'Mẹ ơi, chiều nay con về lúc 6 giờ. Mẹ có cần con mua thêm rau không?'};
 // Dữ liệu thư viện được giữ phía client để lọc/chuyển trang không cần tải lại.

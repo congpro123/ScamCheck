@@ -1331,6 +1331,20 @@ body.light-theme .secondary:hover,
 body.light-theme .sample:hover,
 body.light-theme .filters button:hover,
 body.light-theme .scenario-grid button:hover { color: var(--ink); background: rgba(96, 120, 255, .09); }
+body.light-theme:not(.high-contrast) #clearHistory,
+body.light-theme:not(.high-contrast) .history-card .delete-history {
+  color: #fff;
+  background: #b4233f;
+  border-color: #89172e;
+  box-shadow: 0 7px 18px rgba(137, 23, 46, .22);
+}
+body.light-theme:not(.high-contrast) #clearHistory:hover,
+body.light-theme:not(.high-contrast) .history-card .delete-history:hover {
+  color: #fff;
+  background: #8f1830;
+  border-color: #701024;
+  box-shadow: 0 9px 22px rgba(112, 16, 36, .28);
+}
 body.light-theme:not(.high-contrast) .scenario-grid button.selected,
 body.light-theme:not(.high-contrast) .scenario-grid button.selected:hover {
   color: #fff;

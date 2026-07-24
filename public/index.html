@@ -1,93 +1,241 @@
 <!doctype html>
 <html lang="vi">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#070b1d">
-  <meta name="color-scheme" content="dark">
-  <meta name="description" content="ScamCheck giúp kiểm tra, nhận diện và ứng phó với tin nhắn có dấu hiệu lừa đảo.">
-  <title>ScamCheck</title>
-  <link rel="icon" href="./logo.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=training-light-contrast-1">
-</head>
-<body>
-  <a class="skip" href="#main">Bỏ qua điều hướng</a>
-  <header>
-    <button class="brand" data-view="home" aria-label="Về trang kiểm tra">
-      <span class="brand-mark" aria-hidden="true"><img src="./logo.svg" alt=""></span>
-      <span class="brand-copy"><strong>ScamCheck</strong><small>Safe digital space</small></span>
-     </button>
-     <button id="menuToggle" class="menu-toggle" aria-expanded="false" aria-controls="mainNav" aria-label="Mở mục lục"><span aria-hidden="true">☰</span></button>
-    <nav id="mainNav" aria-label="Chức năng">
-      <button data-view="home"><span class="nav-dot" aria-hidden="true"></span>Kiểm tra</button>
-      <button data-view="library"><span class="nav-dot" aria-hidden="true"></span>Thư viện</button>
-       <button data-view="training"><span class="nav-dot" aria-hidden="true"></span>Luyện tập</button>
-       <button data-view="simulation"><span class="nav-dot" aria-hidden="true"></span>Mô phỏng</button>
-       <button data-view="history"><span class="nav-dot" aria-hidden="true"></span>Lịch sử</button>
-      <div class="settings" aria-label="Tuỳ chỉnh hiển thị">
-        <span>Hiển thị</span>
-        <button id="themeToggle" aria-pressed="false" title="Dùng giao diện sáng" aria-label="Dùng giao diện sáng"><span aria-hidden="true">☼</span></button>
-        <button id="contrastToggle" aria-pressed="false" title="Bật tương phản cao" aria-label="Bật tương phản cao"><span aria-hidden="true">◐</span></button>
-        <button id="fontSize" aria-pressed="false" title="Phóng to chữ" aria-label="Phóng to chữ">A+</button>
-      </div>
-    </nav>
-  </header>
-  <main id="main">
-    <section id="home" class="view active">
-      <div class="hero">
-        <p class="eyebrow"><span aria-hidden="true">✦</span> Trợ lý an toàn số</p>
-        <h1>Tin nhắn này có phải <span>lừa đảo?</span></h1>
-        <p>Dán nguyên văn tin nhắn. ScamCheck không cần tên, số tài khoản hay thông tin bí mật của bác.</p>
-        <div class="hero-badges" aria-label="Đặc điểm của ScamCheck">
-          <span><i aria-hidden="true">✓</i> Phân tích tức thì</span>
-          <span><i aria-hidden="true">✓</i> Không cần đăng nhập</span>
-          <span><i aria-hidden="true">✓</i> Dễ hiểu, dễ hành động</span>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#070b1d" />
+    <meta name="color-scheme" content="dark" />
+    <meta
+      name="description"
+      content="ScamCheck giúp kiểm tra, nhận diện và ứng phó với tin nhắn có dấu hiệu lừa đảo."
+    />
+    <title>ScamCheck</title>
+    <link rel="icon" href="./logo.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css?v=clean-modules-1" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Bỏ qua điều hướng</a>
+    <header>
+      <button class="brand" data-view="home" aria-label="Về trang kiểm tra">
+        <span class="brand-mark" aria-hidden="true">
+          <img src="./logo.svg" alt="" />
+        </span>
+        <span class="brand-copy">
+          <strong>ScamCheck</strong>
+          <small>Safe digital space</small>
+        </span>
+      </button>
+      <button
+        id="menuToggle"
+        class="menu-toggle"
+        aria-expanded="false"
+        aria-controls="mainNav"
+        aria-label="Mở mục lục"
+      >
+        <span aria-hidden="true">☰</span>
+      </button>
+      <nav id="mainNav" aria-label="Chức năng">
+        <button data-view="home">
+          <span class="nav-dot" aria-hidden="true"></span>Kiểm tra
+        </button>
+        <button data-view="library">
+          <span class="nav-dot" aria-hidden="true"></span>Thư viện
+        </button>
+        <button data-view="training">
+          <span class="nav-dot" aria-hidden="true"></span>Luyện tập
+        </button>
+        <button data-view="simulation">
+          <span class="nav-dot" aria-hidden="true"></span>Mô phỏng
+        </button>
+        <button data-view="history">
+          <span class="nav-dot" aria-hidden="true"></span>Lịch sử
+        </button>
+        <div class="settings" aria-label="Tuỳ chỉnh hiển thị">
+          <span>Hiển thị</span>
+          <button
+            id="themeToggle"
+            aria-pressed="false"
+            title="Dùng giao diện sáng"
+            aria-label="Dùng giao diện sáng"
+          >
+            <span aria-hidden="true">☼</span>
+          </button>
+          <button
+            id="contrastToggle"
+            aria-pressed="false"
+            title="Bật tương phản cao"
+            aria-label="Bật tương phản cao"
+          >
+            <span aria-hidden="true">◐</span>
+          </button>
+          <button
+            id="fontSize"
+            aria-pressed="false"
+            title="Phóng to chữ"
+            aria-label="Phóng to chữ"
+          >
+            A+
+          </button>
         </div>
-      </div>
+      </nav>
+    </header>
+    <main id="main">
+      <section id="home" class="view active">
+        <div class="hero">
+          <p class="eyebrow">
+            <span aria-hidden="true">✦</span> Trợ lý an toàn số
+          </p>
+          <h1>Tin nhắn này có phải <span>lừa đảo?</span></h1>
+          <p>
+            Dán nguyên văn tin nhắn. ScamCheck không cần tên, số tài khoản hay
+            thông tin bí mật của bác.
+          </p>
+          <div class="hero-badges" aria-label="Đặc điểm của ScamCheck">
+            <span><i aria-hidden="true">✓</i> Phân tích tức thì</span>
+            <span><i aria-hidden="true">✓</i> Không cần đăng nhập</span>
+            <span><i aria-hidden="true">✓</i> Dễ hiểu, dễ hành động</span>
+          </div>
+        </div>
 
-      <div class="panel input-panel">
-        <div class="panel-kicker"><span aria-hidden="true">✦</span> Kiểm tra an toàn</div>
-        <label for="message">Nội dung cần kiểm tra</label>
-        <textarea id="message" maxlength="6000" placeholder="Ví dụ: Tài khoản của quý khách sắp bị khoá. Bấm vào…" aria-describedby="counter inputHelp"></textarea>
-        <div class="input-meta"><span id="inputHelp">Không nhập mật khẩu hoặc mã OTP thật.</span><span id="counter">0 / 6000</span></div>
-        <div class="sample-row"><span>Tin mẫu:</span><button class="sample" data-sample="prize">Trúng thưởng</button><button class="sample" data-sample="bank">Giả ngân hàng</button><button class="sample" data-sample="safe">Tin an toàn</button></div>
-        <div class="primary-row"><button id="speak" class="secondary" aria-pressed="false">Đọc bằng giọng nói</button><button id="analyze" class="primary"><span>Kiểm tra ngay</span><span aria-hidden="true">→</span></button></div>
-        <p id="usage">Đã dùng 0 / 6 lượt AI trong phiên</p>
-        <div id="error" class="notice error" role="alert" hidden></div>
-      </div>
+        <div class="panel input-panel">
+          <div class="panel-kicker">
+            <span aria-hidden="true">✦</span> Kiểm tra an toàn
+          </div>
+          <label for="message">Nội dung cần kiểm tra</label>
+          <textarea
+            id="message"
+            maxlength="6000"
+            placeholder="Ví dụ: Tài khoản của quý khách sắp bị khoá. Bấm vào…"
+            aria-describedby="counter inputHelp"
+          ></textarea>
+          <div class="input-meta">
+            <span id="inputHelp">Không nhập mật khẩu hoặc mã OTP thật.</span>
+            <span id="counter">0 / 6000</span>
+          </div>
+          <div class="sample-row">
+            <span>Tin mẫu:</span>
+            <button class="sample" data-sample="prize">Trúng thưởng</button>
+            <button class="sample" data-sample="bank">Giả ngân hàng</button>
+            <button class="sample" data-sample="safe">Tin an toàn</button>
+          </div>
+          <div class="primary-row">
+            <button id="speak" class="secondary" aria-pressed="false">
+              Đọc bằng giọng nói
+            </button>
+            <button id="analyze" class="primary">
+              <span>Kiểm tra ngay</span><span aria-hidden="true">→</span>
+            </button>
+          </div>
+          <p id="usage">Đã dùng 0 / 6 lượt AI trong phiên</p>
+          <div id="error" class="notice error" role="alert" hidden></div>
+        </div>
 
-      <div id="loading" class="panel loading" hidden aria-live="polite"><span class="spinner"></span><div><strong>Đang soi từng dấu hiệu…</strong><p id="streamStatus">Lớp luật an toàn đang kiểm tra trước.</p></div></div>
-      <section id="result" hidden aria-live="polite"></section>
-    </section>
+        <div id="loading" class="panel loading" hidden aria-live="polite">
+          <span class="spinner"></span>
+          <div>
+            <strong>Đang soi từng dấu hiệu…</strong>
+            <p id="streamStatus">Lớp luật an toàn đang kiểm tra trước.</p>
+          </div>
+        </div>
+        <section id="result" hidden aria-live="polite"></section>
+      </section>
 
-    <section id="library" class="view">
-      <div class="section-head"><p class="eyebrow"><span aria-hidden="true">✦</span> Nhận diện thủ đoạn</p><h1>Thư viện kiểu <span>lừa đảo</span></h1><p>Chọn một nhóm để xem dấu hiệu và cách phòng tránh.</p></div>
-      <div id="filters" class="filters"></div>
-      <div id="scamGrid" class="card-grid"></div>
-      <dialog id="scamDetail"><button class="dialog-close" aria-label="Đóng">×</button><div id="scamContent"></div></dialog>
-    </section>
+      <section id="library" class="view">
+        <div class="section-head">
+          <p class="eyebrow">
+            <span aria-hidden="true">✦</span> Nhận diện thủ đoạn
+          </p>
+          <h1>Thư viện kiểu <span>lừa đảo</span></h1>
+          <p>Chọn một nhóm để xem dấu hiệu và cách phòng tránh.</p>
+        </div>
+        <div id="filters" class="filters"></div>
+        <div id="scamGrid" class="card-grid"></div>
+        <dialog id="scamDetail">
+          <button class="dialog-close" aria-label="Đóng">×</button>
+          <div id="scamContent"></div>
+        </dialog>
+      </section>
 
-    <section id="training" class="view">
-      <div class="section-head"><p class="eyebrow"><span aria-hidden="true">✦</span> 10 bài học ngắn</p><h1>Luyện mắt phát hiện <span>lừa đảo</span></h1><p>Quan sát từng tình huống, xem gợi ý khi cần và học cách xử lý an toàn. Không tính giờ, không dùng dữ liệu thật.</p></div>
-      <div id="quiz"></div>
-    </section>
+      <section id="training" class="view">
+        <div class="section-head">
+          <p class="eyebrow">
+            <span aria-hidden="true">✦</span> 10 bài học ngắn
+          </p>
+          <h1>Luyện mắt phát hiện <span>lừa đảo</span></h1>
+          <p>
+            Quan sát từng tình huống, xem gợi ý khi cần và học cách xử lý an
+            toàn. Không tính giờ, không dùng dữ liệu thật.
+          </p>
+        </div>
+        <div id="quiz"></div>
+      </section>
 
-    <section id="simulation" class="view">
-      <div class="section-head"><p class="eyebrow"><span aria-hidden="true">✦</span> Hội thoại tương tác</p><h1>Tự quyết định trong <span>kịch bản lừa đảo</span></h1><p>Mỗi lựa chọn sẽ đổi hướng câu chuyện. Đây là mô phỏng an toàn, không dùng tiền thật và không tốn lượt AI.</p></div>
-      <div id="simulationStage"></div>
-    </section>
+      <section id="simulation" class="view">
+        <div class="section-head">
+          <p class="eyebrow">
+            <span aria-hidden="true">✦</span> Hội thoại tương tác
+          </p>
+          <h1>Tự quyết định trong <span>kịch bản lừa đảo</span></h1>
+          <p>
+            Mỗi lựa chọn sẽ đổi hướng câu chuyện. Đây là mô phỏng an toàn, không
+            dùng tiền thật và không tốn lượt AI.
+          </p>
+        </div>
+        <div id="simulationStage"></div>
+      </section>
 
-    <section id="history" class="view">
-      <div class="section-head row"><div><p class="eyebrow"><span aria-hidden="true">✦</span> Lưu trên thiết bị</p><h1>10 tin <span>gần nhất</span></h1><p>Xem lại những tin đã kiểm tra trên thiết bị này.</p></div><button id="clearHistory" class="danger">Xoá tất cả</button></div>
-      <div id="historyList"></div>
-      <article class="panel log-panel"><div class="row"><div><div class="panel-kicker">Dữ liệu phiên</div><h2>Nhật ký gọi AI</h2><p>Thời điểm, độ dài tin, kết quả và thời gian phản hồi.</p></div><button id="exportLogs" class="secondary">Xuất JSON</button></div><div id="callLogs"></div></article>
-    </section>
-  </main>
-  <footer><span class="footer-mark" aria-hidden="true"><img src="./logo.svg" alt=""></span><p>ScamCheck là công cụ giáo dục do nhóm học viên phát triển và không thay thế cảnh báo chính thức từ ngân hàng hoặc cơ quan chức năng.</p></footer>
-  <script src="./simulation.js?v=simulation-1" defer></script>
-  <script src="./app.js?v=training-course-1" defer></script>
-</body>
+      <section id="history" class="view">
+        <div class="section-head row">
+          <div>
+            <p class="eyebrow">
+              <span aria-hidden="true">✦</span> Lưu trên thiết bị
+            </p>
+            <h1>10 tin <span>gần nhất</span></h1>
+            <p>Xem lại những tin đã kiểm tra trên thiết bị này.</p>
+          </div>
+          <button id="clearHistory" class="danger">Xoá tất cả</button>
+        </div>
+        <div id="historyList"></div>
+        <article class="panel log-panel">
+          <div class="row">
+            <div>
+              <div class="panel-kicker">Dữ liệu phiên</div>
+              <h2>Nhật ký gọi AI</h2>
+              <p>Thời điểm, độ dài tin, kết quả và thời gian phản hồi.</p>
+            </div>
+            <button id="exportLogs" class="secondary">Xuất JSON</button>
+          </div>
+          <div id="callLogs"></div>
+        </article>
+      </section>
+    </main>
+    <footer>
+      <span class="footer-mark" aria-hidden="true">
+        <img src="./logo.svg" alt="" />
+      </span>
+      <p>
+        ScamCheck là công cụ giáo dục do nhóm học viên phát triển và không thay
+        thế cảnh báo chính thức từ ngân hàng hoặc cơ quan chức năng.
+      </p>
+    </footer>
+    <script src="./core.js?v=clean-modules-1" defer></script>
+    <script src="./content.js?v=clean-modules-1" defer></script>
+    <script src="./state.js?v=clean-modules-1" defer></script>
+    <script src="./navigation.js?v=clean-modules-1" defer></script>
+    <script src="./analysis-ui.js?v=clean-modules-1" defer></script>
+    <script src="./catalog-ui.js?v=clean-modules-1" defer></script>
+    <script src="./training-ui.js?v=clean-modules-1" defer></script>
+    <script src="./simulation.js?v=clean-modules-1" defer></script>
+    <script src="./simulation-ui.js?v=clean-modules-1" defer></script>
+    <script src="./app.js?v=clean-modules-1" defer></script>
+  </body>
 </html>

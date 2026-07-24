@@ -1,25 +1,17 @@
-# Blueprint tạo Web Service Node từ repository này.
 services:
   - type: web
     name: scamcheck-vn
-    # Chạy API và phục vụ frontend trong public/.
     runtime: node
     plan: free
-    # npm ci cài đúng phiên bản trong package-lock.
     buildCommand: npm ci
     startCommand: npm start
-    # Render dùng route này để kiểm tra tiến trình sống.
     healthCheckPath: /api/health
     envVars:
-      # Node LTS khớp môi trường CI.
       - key: NODE_VERSION
         value: 20
-      # sync:false: nhập khoá ở Dashboard, không lưu trong Git.
       - key: GEMINI_API_KEY
         sync: false
-      # Model nhanh cho chuỗi Thám tử → Cô tâm lý.
       - key: GEMINI_MODEL
         value: gemini-3.1-flash-lite
-      # URL public dùng khi sinh mã QR.
       - key: PUBLIC_URL
         sync: false

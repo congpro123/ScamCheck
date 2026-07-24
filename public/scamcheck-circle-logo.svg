@@ -1,30 +1,89 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-labelledby="title description">
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 1200 1200"
+  role="img"
+  aria-labelledby="title description"
+>
   <title id="title">ScamCheck</title>
-  <desc id="description">ScamCheck circular brand logo with the original shield, white wordmark, and grey Safe Digital Space tagline.</desc>
+  <desc id="description">
+    ScamCheck circular brand logo with the original shield, white wordmark, and
+    grey Safe Digital Space tagline.
+  </desc>
   <defs>
-    <linearGradient id="aurora" x1="8" y1="6" x2="56" y2="60" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#51E4D5"/>
-      <stop offset=".42" stop-color="#6078FF"/>
-      <stop offset=".72" stop-color="#9F67FF"/>
-      <stop offset="1" stop-color="#F06BDC"/>
+    <linearGradient
+      id="aurora"
+      x1="8"
+      y1="6"
+      x2="56"
+      y2="60"
+      gradientUnits="userSpaceOnUse"
+    >
+      <stop stop-color="#51E4D5" />
+      <stop offset=".42" stop-color="#6078FF" />
+      <stop offset=".72" stop-color="#9F67FF" />
+      <stop offset="1" stop-color="#F06BDC" />
     </linearGradient>
-    <linearGradient id="shine" x1="18" y1="12" x2="44" y2="50" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#fff" stop-opacity=".34"/>
-      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    <linearGradient
+      id="shine"
+      x1="18"
+      y1="12"
+      x2="44"
+      y2="50"
+      gradientUnits="userSpaceOnUse"
+    >
+      <stop stop-color="#fff" stop-opacity=".34" />
+      <stop offset="1" stop-color="#fff" stop-opacity="0" />
     </linearGradient>
     <filter id="soft-grey" x="-5%" y="-30%" width="110%" height="160%">
-      <feGaussianBlur stdDeviation=".45"/>
+      <feGaussianBlur stdDeviation=".45" />
     </filter>
   </defs>
 
-  <circle cx="600" cy="600" r="570" fill="#070B1D"/>
+  <circle cx="600" cy="600" r="570" fill="#070B1D" />
 
   <g transform="translate(408 270) scale(6)">
-    <path fill="url(#aurora)" d="M32 3.5 56 12v17.2c0 14.8-9.7 25.8-24 31.3C17.7 55 8 44 8 29.2V12l24-8.5Z"/>
-    <path fill="url(#shine)" d="M32 7.7 52 15v14.2c0 11.8-7.2 21-20 26.4V7.7Z"/>
-    <path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="5.2" d="m20.5 31.5 7.2 7.2 16-17"/>
+    <path
+      fill="url(#aurora)"
+      d="M32 3.5 56 12v17.2c0 14.8-9.7 25.8-24 31.3C17.7 55 8 44 8 29.2V12l24-8.5Z"
+    />
+    <path
+      fill="url(#shine)"
+      d="M32 7.7 52 15v14.2c0 11.8-7.2 21-20 26.4V7.7Z"
+    />
+    <path
+      fill="none"
+      stroke="#fff"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="5.2"
+      d="m20.5 31.5 7.2 7.2 16-17"
+    />
   </g>
 
-  <text x="600" y="790" fill="#fff" font-family="Manrope, 'Segoe UI', Arial, sans-serif" font-size="116" font-weight="800" letter-spacing="-4" text-anchor="middle">SCAMCHECK</text>
-  <text x="600" y="870" fill="#AAB2CF" filter="url(#soft-grey)" font-family="Manrope, 'Segoe UI', Arial, sans-serif" font-size="32" font-weight="700" letter-spacing="10" opacity=".68" text-anchor="middle">SAFE DIGITAL SPACE</text>
+  <text
+    x="600"
+    y="790"
+    fill="#fff"
+    font-family="Manrope, 'Segoe UI', Arial, sans-serif"
+    font-size="116"
+    font-weight="800"
+    letter-spacing="-4"
+    text-anchor="middle"
+  >
+    SCAMCHECK
+  </text>
+  <text
+    x="600"
+    y="870"
+    fill="#AAB2CF"
+    filter="url(#soft-grey)"
+    font-family="Manrope, 'Segoe UI', Arial, sans-serif"
+    font-size="32"
+    font-weight="700"
+    letter-spacing="10"
+    opacity=".68"
+    text-anchor="middle"
+  >
+    SAFE DIGITAL SPACE
+  </text>
 </svg>

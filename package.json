@@ -7,7 +7,8 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "test": "node --test tests/*.test.js",
-    "evaluate": "node scripts/evaluate.js"
+    "evaluate": "node scripts/evaluate.js",
+    "capture:evidence": "node scripts/capture-ai-evidence.js"
   },
   "engines": {
     "node": ">=18"

@@ -1,16 +1,76 @@
 [
-  { "id": "police", "name": "Công an - khẩn cấp", "phone": "113", "source": "Cổng thông tin Bộ Công an" },
-  { "id": "national-cyber", "name": "Tổng đài An toàn mạng quốc gia", "phone": "18001031", "source": "danh sách đã xác minh" },
-  { "id": "cyber-police", "name": "Phòng An ninh mạng và phòng, chống tội phạm sử dụng công nghệ cao", "phone": "0692194053", "source": "danh sách đã xác minh" },
-  { "id": "cyber", "name": "Cục An toàn thông tin - phản ánh cuộc gọi, tin nhắn lừa đảo", "phone": "156", "source": "danh sách đã xác minh" },
-  { "id": "vcb", "name": "Vietcombank", "phone": "1900545413", "source": "vietcombank.com.vn" },
-  { "id": "bidv", "name": "BIDV", "phone": "19009247", "source": "bidv.com.vn" },
-  { "id": "ctg", "name": "VietinBank", "phone": "1900558868", "source": "vietinbank.vn" },
-  { "id": "agr", "name": "Agribank", "phone": "1900558818", "source": "agribank.com.vn" },
-  { "id": "mb", "name": "MB Bank", "phone": "1900545426", "source": "mbbank.com.vn" },
-  { "id": "tcb", "name": "Techcombank", "phone": "1800588822", "source": "techcombank.com" },
-  { "id": "vpb", "name": "VPBank", "phone": "1900545415", "source": "vpbank.com.vn" },
+  {
+    "id": "police",
+    "name": "Công an - khẩn cấp",
+    "phone": "113",
+    "source": "Cổng thông tin Bộ Công an"
+  },
+  {
+    "id": "national-cyber",
+    "name": "Tổng đài An toàn mạng quốc gia",
+    "phone": "18001031",
+    "source": "danh sách đã xác minh"
+  },
+  {
+    "id": "cyber-police",
+    "name": "Phòng An ninh mạng và phòng, chống tội phạm sử dụng công nghệ cao",
+    "phone": "0692194053",
+    "source": "danh sách đã xác minh"
+  },
+  {
+    "id": "cyber",
+    "name": "Cục An toàn thông tin - phản ánh cuộc gọi, tin nhắn lừa đảo",
+    "phone": "156",
+    "source": "danh sách đã xác minh"
+  },
+  {
+    "id": "vcb",
+    "name": "Vietcombank",
+    "phone": "1900545413",
+    "source": "vietcombank.com.vn"
+  },
+  {
+    "id": "bidv",
+    "name": "BIDV",
+    "phone": "19009247",
+    "source": "bidv.com.vn"
+  },
+  {
+    "id": "ctg",
+    "name": "VietinBank",
+    "phone": "1900558868",
+    "source": "vietinbank.vn"
+  },
+  {
+    "id": "agr",
+    "name": "Agribank",
+    "phone": "1900558818",
+    "source": "agribank.com.vn"
+  },
+  {
+    "id": "mb",
+    "name": "MB Bank",
+    "phone": "1900545426",
+    "source": "mbbank.com.vn"
+  },
+  {
+    "id": "tcb",
+    "name": "Techcombank",
+    "phone": "1800588822",
+    "source": "techcombank.com"
+  },
+  {
+    "id": "vpb",
+    "name": "VPBank",
+    "phone": "1900545415",
+    "source": "vpbank.com.vn"
+  },
   { "id": "acb", "name": "ACB", "phone": "1900545486", "source": "acb.com.vn" },
-  { "id": "stb", "name": "Sacombank", "phone": "1800585888", "source": "sacombank.com.vn" },
+  {
+    "id": "stb",
+    "name": "Sacombank",
+    "phone": "1800585888",
+    "source": "sacombank.com.vn"
+  },
   { "id": "tpb", "name": "TPBank", "phone": "1900585885", "source": "tpb.vn" }
 ]

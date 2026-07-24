@@ -32,8 +32,8 @@ ScamCheck không thay thế ngân hàng/cơ quan chức năng, không tự mở 
 
 Điền tên thành viên, vai trò và liên hệ tại đây trước khi nộp.
 
-Kiều Việt Bách - Frontend
-Thái Thành Công - Backend
-Trần Xuân Cẩn - Tester
-Phạm Minh Trí - Tester
-Hoàng Thế Hưng - Tester
+- Kiều Việt Bách - Frontend
+- Thái Thành Công - Backend
+- Trần Xuân Cẩn - Tester
+- Phạm Minh Trí - Tester
+- Hoàng Thế Hưng - Tester
